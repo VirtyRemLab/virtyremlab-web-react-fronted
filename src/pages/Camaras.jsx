@@ -30,7 +30,7 @@ export default function Camaras() {
           <img src={image} alt="stream" style={{ maxWidth: "100%" }} />
           <button onClick={() => {fetch("http://localhost:8000/ptz?direction=left")}}>Mover Izquierda</button>
           <button onClick={() => { fetch("http://localhost:8000/ptz?direction=right") }}>Mover Derecha</button>
-          <button onClick={() => { fetch("http://localhost:8000/ptz?direction=up") }}>Mover arriva</button>
+          <button onClick={() => { fetch("http://localhost:8000/ptz?direction=up") }}>Mover arriba</button>
           <button onClick={() => { fetch("http://localhost:8000/ptz?direction=down") }}>Mover abajo</button>
           <button onClick={() => {fetch("http://localhost:8000/ptz?direction=stop")}}>Stop</button>
           </Box>
