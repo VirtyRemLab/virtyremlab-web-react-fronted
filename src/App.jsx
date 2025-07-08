@@ -3,6 +3,7 @@ import ResponsiveDrawer from './ResponsiveDrawer'
 import Teoria from './pages/Teoria'
 import Laboratorios from './pages/Laboratorios'
 import Home from "./pages/Home"
+import Camaras from "./pages/Camaras"
 
 import MarkdownComponent from "./pages/Markdown"
 
@@ -17,6 +18,7 @@ export default function App() {
         <Route path="teoria" element={<Teoria />} />
         <Route path="laboratorios" element={<Laboratorios />} />
         <Route path="markdown" element={<MarkdownComponent />} />
+        <Route path="camaras" element={<Camaras />} />
       </Route>
     </Routes>
         

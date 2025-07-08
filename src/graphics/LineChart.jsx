@@ -10,12 +10,25 @@ import ReactECharts  from 'echarts-for-react';
 //     width: el ancho de la gráfica
 
 
-export default function LineChart({ x ,  y ,  height,width} ) {
+export default function LineChart({ title, x ,  y ,  height,width} ) {
 
 
   const option = {
     title: {
-      text: 'Stream en tiempo real',
+      text: title,
+      textStyle: {
+        color: '#ffffff', // color del título
+        fontSize: 20,
+        fontWeight: 'bold',
+      },
+    },
+    grid: {
+      left: '10%',
+      right: '10%',
+      top: 60,
+      bottom: 60,
+      containLabel: true,
+      backgroundColor: '#000000', // ⚙️ solo visible si usas un tema custom
     },
     tooltip: {
       trigger: 'axis',
@@ -34,6 +47,12 @@ export default function LineChart({ x ,  y ,  height,width} ) {
         showSymbol: false,
         smooth: true,
       },
+      {
+        data: y ,
+    type: 'line',
+    showSymbol: false,
+    smooth: true,
+  },
     ],
   };
 

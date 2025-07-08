@@ -24,7 +24,7 @@ export default function Laboratorios() {
 
     socketRef.current.on("dato_esp32", (data) => {
       // console.log("📡 Mensaje:", data);
-     
+      setangle(data["dato"]*90.0) 
       sety((prev) => [...prev.slice(1), data["dato"]])
       setx((prev) => {
         const last = prev[prev.length - 1] || 0; // último valor
@@ -43,6 +43,7 @@ export default function Laboratorios() {
   const socketRef = useRef();
   const [y, sety] = useState(Array(100).fill(0));
   const [x, setx] = useState(Array(100).fill(0));
+  const [angle_slider, setangle_slider] = useState(0);
   const [angle, setangle] = useState(0);
 
   const cllbackSliderFreq = (event, newValue) => {
@@ -50,7 +51,7 @@ export default function Laboratorios() {
     //console.log(newValue)
   }
   const cllbackSliderAngle = (event, newValue) => {
-    setangle(newValue.value)
+    setangle_slider(newValue.value)
     console.log(newValue)
   }
 
@@ -85,7 +86,7 @@ export default function Laboratorios() {
             <Grid size={8}>
                 {/* Elementos dentro de una columna con stack*/}
               <Stack spacing={2}>
-                  <LineChart x={x} y={y} height={400} width="100%" /> 
+                  <LineChart title={"Consigna"} x={x} y={y} height={400} width="100%" /> 
                   <LineChart x={x} y={y} height={400} width="100%" /> 
               </Stack>    
               
