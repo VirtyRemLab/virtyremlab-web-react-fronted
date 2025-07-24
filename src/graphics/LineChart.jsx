@@ -38,7 +38,7 @@ export default function LineChart({ title, x, y, height, width, colors,labels })
     legend: {
       textStyle: {
         color: '#AAAAAA', // color del título
-        fontSize: 10,
+        fontSize: 15,
         //fontWeight: 'bold',
       },
     },
@@ -47,6 +47,7 @@ export default function LineChart({ title, x, y, height, width, colors,labels })
       right: '10%',
       top: 60,
       bottom: 60,
+      
       //containLabel: true,
       //backgroundColor: '#000000', // ⚙️ solo visible si usas un tema custom
     },
