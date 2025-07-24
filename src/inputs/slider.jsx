@@ -19,14 +19,14 @@ export default function InputSlider({ title, min, max, step, initVal, units,cllb
  
     
   const handleSliderChange = (event, newValue) => {
-      
+    var newValue = Number(event.target.value);
       if (newValue < min) {
           newValue = min;
       } else if (newValue> max) {
           newValue = max;
       }
-      setValue(newValue);
-      cllback(event, { value });
+    setValue(newValue);
+    cllback(event,  newValue );
   };
     
 
@@ -37,8 +37,8 @@ export default function InputSlider({ title, min, max, step, initVal, units,cllb
         } else if (newValue > max) {
             newValue = max;
         }
-        setValue(newValue);
-        cllback(event, { value });
+      setValue(newValue);
+      cllback(event, newValue );
 
     };
 
