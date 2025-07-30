@@ -8,7 +8,13 @@ export const PI = function (Kp, Ki) {
     return { A: [[0]], B: [[1]], C: [[Kp*Ki]], D: Kp };
 }
     
-    
+export const PID = function (Kp, Ki, Kd,alpha=0.01) {
+    let a = Ki, b = 1 - (Kd / alpha) + Ki * alpha, c = Kp * Kd / alpha;
+    return { A: [[0,0],[0,-1/alpha]], B: [[1],[1/alpha]], C: [[Kp*a, Kp*b]], D: c };
+}
+
+
+
     
 
 // Función para el cálculo de \dot{X} e Y a partir de las matrices de estado y un estado inicial

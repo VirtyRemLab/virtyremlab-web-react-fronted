@@ -6,7 +6,7 @@ import { useEffect,useState,useRef } from "react";
 import Aeropendulo_svg from "../graphics/aeropendulo"
 import LineChart from "../graphics/LineChart"
 import { aeropendulo } from "../js_sim/models"
-import { modeloEE,PI } from "../js_sim/models"
+import { modeloEE,PI,PID } from "../js_sim/models"
 import { rk4 } from "../js_sim/solvers"
 import InputSlider from "../inputs/slider"
 import PlayPauseButton from "../inputs/PlayPauseButton"
@@ -36,7 +36,8 @@ export default function Simulaciones() {
   
   // Parámetros del control
   const Kp = useRef(4); // Kp como referencia para que persista entre renderizados (valor global)
-  const Ki = useRef(0); // Kp como referencia para que persista entre renderizados (valor global)
+  const Ki = useRef(0); // Ganancia integral Ki 
+  const Kd = useRef(0); // Ganancia diferencial Kd 
   // Parámetros de la entrada
   const F = useRef(0.01);               // Frecuencia de la señal de referencia
   const A = useRef(10);               // Amplitud de la señal
@@ -44,10 +45,10 @@ export default function Simulaciones() {
   // Modelos y condiciones iniciales
   var modeloAeropendulo = new modeloEE(aeropendulo);
 
-  var pi_reg = useRef(new modeloEE(PI(Kp.current, Ki.current)));
+  var pi_reg = useRef(new modeloEE(PID(Kp.current, Ki.current,Kd.current)));
 
   let x = useRef([[0], [0]]);
-  let x_pi = useRef([0]);
+  let x_pi = useRef([[0],[0]]);
   
   // Buffers de las gráficas
   const [theta, set_theta] = useState(Array(range_t_figure_s * F_display).fill(0));
@@ -67,16 +68,26 @@ export default function Simulaciones() {
   const cllback_kp = (event, newValue) => {
     
     Kp.current = newValue;
-    pi_reg.current.update_params(PI(newValue, Ki.current));
+    pi_reg.current.update_params(PID(newValue, Ki.current,Kd.current));
   }
 
-  const cllback_ki = (event, newValue) => {
-    
-    if (Ki.current == 0)
-      x_pi.current = [[0]];
+  const cllback_ki = (event, newValue) => {    
     
     Ki.current = newValue;
-    pi_reg.current.update_params(PI(Kp.current, newValue));
+    pi_reg.current.update_params(PID(Kp.current, newValue, Kd.current));
+    if (Ki.current == 0)
+      x_pi.current[0][0] = 0;
+
+    
+  }
+
+  const cllback_kd = (event, newValue) => {
+    
+    // if (Kd.current == 0)
+    //   x_pi.current = [[0]];
+    
+    Kd.current = newValue;
+    pi_reg.current.update_params(PID(Kp.current, Ki.current,newValue));
   }
 
   const cllback_A = (event, newValue) => {
@@ -144,7 +155,7 @@ export default function Simulaciones() {
         case 'idle':
           u_.current = 0, theta_.current = 0, w_.current = 0, t_.current = 0, r_.current = 0, e_.current = 0, y_.current;
           x.current = [[0], [0]];
-          x_pi.current = [0];
+          x_pi.current = [[0],[0]];
 
           set_theta(Array(range_t_figure_s * F_display).fill(0));
           set_r(Array(range_t_figure_s * F_display).fill(0));
@@ -203,102 +214,82 @@ export default function Simulaciones() {
  
   
   return (
-        <Container maxWidth="lg">
+      <Container maxWidth="lg">
             
-          <Box sx={{ my: 4 }}>
+        <Box sx={{ my: 4 }}>
             <Typography variant="h4" gutterBottom>
               Aeropéndulo: Control PID 
-        </Typography>
+            </Typography>
         
-        <Box sx={{ flexGrow: 1 }}>
-
-        {/* <Typography variant="body1">
-          En esta página se simula el comportamiento de un aeropéndulo. 
-        </Typography> */}
-          
-                {/* Grid flexible para facilitar el layout reactivo*/}
-          <Grid container spacing={2}>
-            
-            
-                {/* Elementos dentro de una columna con stack*/}
-              
-            <Grid size={5}>
-                <Aeropendulo_svg angle={theta[theta.length - 1]} angle_ghost={r[r.length - 1]} opacity_pert={p[p.length - 1]>0?1:0} />
-            </Grid>
-                  
-            {/* Configuración de la entrada */}
-            <Grid size={4}>
-            <Card sx={{backgroundColor:"#2f2d2dff"}}>
-                <CardContent>
-                <Stack>
-                <Typography variant="h5" gutterBottom> Entrada  </Typography>
-                <InputSlider title={"Frecuencia"} min={0} max={1} initVal={F.current} step={0.01} units={"Hz"} cllback={cllback_F} />
-                <InputSlider title={"Amplitud"} min={-60} max={60} initVal={A.current} step={3} units={"º"} cllback={cllback_A} />
-                <Divider />
-                <FormGroup>
-                      <FormControlLabel control={<Switch />} onChange={cllback_P} label="Perturbación" />
-               </FormGroup>
-                  </Stack>
-                  </CardContent>
-                </Card>
-            </Grid>
-            
-            {/* <Grid size={1}></Grid> */}
-
-            {/* Configuración de la regulador */}
-            <Grid size={3}>
-              <Card sx={{backgroundColor:"#2f2d2dff"}}>
-              <CardContent>
-              <Stack>
-                <Typography variant="h5" gutterBottom> Regulador PID </Typography>
-                <InputSlider title={"Kp"} min={0} max={10} initVal={Kp.current} step={0.3} units={""} cllback={cllback_kp} />
-                <InputSlider title={"Ki"} min={0} max={1} initVal={Ki.current} step={0.05} units={""} cllback={cllback_ki} />
-                  </Stack>
-                </CardContent>
-                </Card>
-            </Grid>
-              
-            <Grid size={12}>
-              <div style={{  gap: '18px' }}>
-              <PlayPauseButton cllback={callback_play} /> {(estado.current==="paused") ? <RestartButton cllback={callback_restart} />:<></> }
-              </div>
-            </Grid>
-            <Grid size={8}>
-                <Card sx={{backgroundColor:"#2f2d2dff"}}>
-                <CardContent>
-                  <LineChart title={""} x={t} y={[r, theta]} labels={["r(t)", "theta(t)"]} height={400} width="100%" range={ [-180,180]} /> 
-              </CardContent>
-              </Card>
-              
+            <Box sx={{ flexGrow: 1 }}>
+                    
+              <Grid container spacing={2}>   
+                {/* Animación del aeropéndulo */}
+                <Grid size={5}>
+                  <Aeropendulo_svg angle={theta[theta.length - 1]} angle_ghost={r[r.length - 1]} opacity_pert={p[p.length - 1]>0?1:0} />
                 </Grid>
-            <Grid size={4}>
-              
-              <Card sx={{backgroundColor:"#2f2d2dff"}}>
-              <CardContent>
-              <Stack>
-
-                <LineChart title={""} x={t} y={[u]} labels={["u(t)"]} height={200} colors={['#10B981']} width="100%" /> 
-               
-                <LineChart title={""} x={t} y={[e]} height={200} labels={["e(t)"]} colors={['#FACC15']} width="100%" /> 
-            </Stack>    
-              </CardContent>
-              </Card>
-              
+                      
+                {/* Configuración de la entrada */}
+                <Grid size={4}>
+                  <Card sx={{backgroundColor:"#2f2d2dff"}}>
+                    <CardContent>
+                      <Stack>
+                        <Typography variant="h5" gutterBottom> Entrada  </Typography>
+                        <InputSlider title={"Frecuencia"} min={0} max={1} initVal={F.current} step={0.01} units={"Hz"} cllback={cllback_F} />
+                        <InputSlider title={"Amplitud"} min={-60} max={60} initVal={A.current} step={3} units={"º"} cllback={cllback_A} />
+                        <Divider />
+                        <FormGroup>
+                            <FormControlLabel control={<Switch />} onChange={cllback_P} label="Perturbación" />
+                        </FormGroup>
+                      </Stack>
+                    </CardContent>
+                    </Card>
                 </Grid>
+                
 
-              
-           
-
-          
+                {/* Configuración de la regulador */}
+                <Grid size={3}>
+                  <Card sx={{backgroundColor:"#2f2d2dff"}}>
+                    <CardContent>
+                      <Stack>
+                        <Typography variant="h5" gutterBottom> Regulador PID </Typography>
+                        <InputSlider title={"Kp"} min={0} max={10} initVal={Kp.current} step={0.3} units={""} cllback={cllback_kp} />
+                        <InputSlider title={"Ki"} min={0} max={1} initVal={Ki.current} step={0.05} units={""} cllback={cllback_ki} /> 
+                        <InputSlider title={"Kd"} min={0} max={0.9} initVal={Ki.current} step={0.0005} units={""} cllback={cllback_kd} />
+                      </Stack>
+                    </CardContent>
+                  </Card>
+                </Grid>
                   
-          </Grid>
-
-
-
+                {/* Controles de la simulación */}
+                <Grid size={12}>
+                  <div style={{  gap: '18px' }}>
+                    <PlayPauseButton cllback={callback_play} /> {(estado.current==="paused") ? <RestartButton cllback={callback_restart} />:<></> }
+                  </div>
+                </Grid>
+            
+                {/* Gráficas */}
+                <Grid size={8}>
+                  <Card sx={{backgroundColor:"#2f2d2dff"}}>
+                    <CardContent>
+                      <LineChart title={""} x={t} y={[r, theta]} labels={["r(t)", "theta(t)"]} height={400} width="100%" range={ [-180,180]} /> 
+                    </CardContent>
+                  </Card>
+                </Grid>
+            
+                <Grid size={4}>
+                  
+                  <Card sx={{backgroundColor:"#2f2d2dff"}}>
+                    <CardContent>
+                      <Stack>
+                        <LineChart title={""} x={t} y={[u]} labels={["u(t)"]} height={200} colors={['#10B981']} range={ [-180,180]} width="100%" /> 
+                        <LineChart title={""} x={t} y={[e]} height={200} labels={["e(t)"]} colors={['#FACC15']} range={ [-180,180]}width="100%" /> 
+                      </Stack>    
+                    </CardContent>
+                  </Card>  
+                </Grid>
+              </Grid>
         </Box>
-
-  
-   
       </Box>
         </Container>
       );
