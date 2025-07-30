@@ -10,20 +10,22 @@ import ReactECharts  from 'echarts-for-react';
 //     width: el ancho de la gráfica
 
 
-export default function LineChart({ title, x, y, height, width, colors,labels }) {
+export default function LineChart({ title, x, y, height, width, colors,range,labels }) {
   
   const default_colors = ['#8B5CF6','#10B981','#FACC15']
   if (!colors)
     colors = default_colors;
   if (!labels)
-    labels = y.map((item,idx)=>" ")
+    labels = y.map((item, idx) => " ")
+  if (!range)
+    range= [null, null]
   
   const series = y.map((item,idx) => ({
                                       data: item,
                                       name: labels[idx],
                                       type: 'line',
                                       showSymbol: false,
-                                      smooth: false,
+                                      smooth: false,                                                                       
                                       color:colors[idx]
                                     }))
   const option = {
@@ -57,12 +59,34 @@ export default function LineChart({ title, x, y, height, width, colors,labels })
     xAxis: {
       type: 'category',
       data: x,
+      name:"t",
         
     },
     yAxis: {
       type: 'value',
+      min: range[0],
+      max: range[1], 
     },
     series: series,
+
+  dataZoom: [
+    // {
+    //   type: 'inside',   // Zoom con scroll o gesto pinch
+    //   xAxisIndex: 0,
+    // },
+    // {
+    //   type: 'slider',   // Barra de zoom visible
+    //   xAxisIndex: 0,
+    // },
+    {
+      type: 'inside',   // Zoom vertical con scroll
+      yAxisIndex: 0,
+    },
+    // {
+    //   type: 'slider',   // Barra de zoom vertical
+    //   yAxisIndex: 0,
+    // },
+  ],
   };
 
   return <ReactECharts option={option} style={{ height: height, width: width}} />;
