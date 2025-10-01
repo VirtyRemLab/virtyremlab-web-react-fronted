@@ -215,7 +215,7 @@ export default function Simulaciones() {
   
   return (
       <Container maxWidth="lg">
-            
+         <Toolbar />   
         <Box sx={{ my: 4 }}>
             <Typography variant="h4" gutterBottom>
               Aeropéndulo: Control PID 
