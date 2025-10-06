@@ -10,10 +10,10 @@ Para crear la imagen del frontend se proporciona el dockerfile.
 
 Para crear la imagen:
 ```bash
-docker build -t react-vite-nginx .
+docker build -t react-vite-nginx:v0.1 .
 ```
 
 Para ejecutar el contenedor:
 ```bash
- docker run -d -p 8080:80 react-vite-nginx
+docker run -d -p 5000:80 --name react-vite-nginx react-vite-nginx:v0.1
 ```
