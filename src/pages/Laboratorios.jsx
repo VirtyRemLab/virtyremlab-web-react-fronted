@@ -16,16 +16,17 @@ export default function Laboratorios() {
  
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:8000"); // ⚡ Ajusta tu URL
+    socketRef.current = io("http://localhost:8002"); 
 
     socketRef.current.on("connect", () => {
-      // console.log("✅ Conectado:", socket.id);
+      console.log("✅ Conectado:", socket.id);
     });
 
     socketRef.current.on("dato_esp32", (data) => {
-      // console.log("📡 Mensaje:", data);
-      setangle(data["dato"]*90.0) 
-      sety((prev) => [...prev.slice(1), data["dato"]])
+      console.log("📡 Mensaje:", data);
+      setangle(data["dato"] * 90.0) 
+      
+      sety((prev) => [...prev.slice(1), data["dato"]*90.0])
       setx((prev) => {
         const last = prev[prev.length - 1] || 0; // último valor
         const next = last + 1;
@@ -86,8 +87,9 @@ export default function Laboratorios() {
             <Grid size={8}>
                 {/* Elementos dentro de una columna con stack*/}
               <Stack spacing={2}>
-                  <LineChart title={"Consigna"} x={x} y={y} height={400} width="100%" /> 
-                  <LineChart x={x} y={y} height={400} width="100%" /> 
+                  <LineChart title={"Consigna"} x={x} y={[y]} labels={["r(t)"]} height={400} width="100%" range={ [-180,180]} /> 
+                  <LineChart x={x} y={[y]} labels={["y(t)"]} height={400} width="100%" range={ [-180,180]} /> 
+                  
               </Stack>    
               
             </Grid>
