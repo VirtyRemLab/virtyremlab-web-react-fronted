@@ -2,6 +2,11 @@
 
 Frontend desarrollado en react y MUI para el servicio web de laboratorios remotos y virtuales de UniOvi. 
 
+# Ejecución en local
+```
+npm run dev
+```
+
 # Despliegue con docker
 
 Este microservicio de frontend se alojará en un servidor web nginx. La configuración del mismo se encuentra en ```nginx.conf```.
