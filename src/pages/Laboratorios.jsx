@@ -11,22 +11,29 @@ import LineChart from "../graphics/LineChart"
 import InputSlider  from "../inputs/slider"
 import Aeropendulo_svg from "../graphics/aeropendulo"
 
+import Divider, { dividerClasses } from '@mui/material/Divider';
+import Card from '@mui/material/Card';
+import CardContent from '@mui/material/CardContent';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch';
+
 export default function Laboratorios() {
   
- 
+
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:8002"); 
-
+    
+    socketRef.current = io("http://localhost:8002")
     socketRef.current.on("connect", () => {
       console.log("✅ Conectado:", socket.id);
     });
 
-    socketRef.current.on("dato_esp32", (data) => {
+    socketRef.current.on("aeropendulo_state", (data) => {
       console.log("📡 Mensaje:", data);
-      setangle(data["dato"] * 90.0) 
+      setangle(data["yk"]) 
       
-      sety((prev) => [...prev.slice(1), data["dato"]*90.0])
+      sety((prev) => [...prev.slice(1), data["yk"]])
       setx((prev) => {
         const last = prev[prev.length - 1] || 0; // último valor
         const next = last + 1;
@@ -41,7 +48,7 @@ export default function Laboratorios() {
     };
   }, []);
   
-  const socketRef = useRef();
+  const socketRef = useRef( );
   const [y, sety] = useState(Array(100).fill(0));
   const [x, setx] = useState(Array(100).fill(0));
   const [angle_slider, setangle_slider] = useState(0);
@@ -56,6 +63,15 @@ export default function Laboratorios() {
     console.log(newValue)
   }
 
+  const cllback_on = (event, newValue) => {
+     
+     if (newValue)
+       socketRef.current.emit("event", 1);
+    else
+      socketRef.current.emit("event",2);
+     
+   }
+ 
 
 
     return (  
@@ -80,7 +96,27 @@ export default function Laboratorios() {
             </Grid>
                   
           </Grid> */}
+                    {/* Configuración de la entrada */}
+          <Grid size={4}>
+            <Card sx={{backgroundColor:"#2f2d2dff"}}>
+              <CardContent>
+                <Stack>
+                  <Typography variant="h5" gutterBottom> Entrada  </Typography>
+                  <FormGroup>
+                      <FormControlLabel control={<Switch />} onChange={cllback_on} label="POWER ON" />
+                  </FormGroup>
 
+                    {/* <InputSlider title={"Frecuencia"} min={0} max={1} initVal={F.current} step={0.01} units={"Hz"} cllback={cllback_F} /> */}
+                  {/* <InputSlider title={"Amplitud"} min={-60} max={60} initVal={A.current} step={3} units={"º"} cllback={cllback_A} /> */}
+                  <Divider />
+                  {/* <FormGroup>
+                      <FormControlLabel control={<Switch />} onChange={cllback_on} label="Perturbación" />
+                  </FormGroup> */}
+                </Stack>
+              </CardContent>
+              </Card>
+          </Grid>
+                
           {/* Grid flexible para facilitar el layout reactivo*/}
           <Grid container spacing={2}>
             
