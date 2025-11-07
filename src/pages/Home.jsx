@@ -21,6 +21,12 @@ export default function Home() {
     navigate("/labs");
   }
 
+  // Callback del botón de documentación
+  function handleDocButton() {
+    navigate("/docs");
+  }
+
+
 
   return (
     <>
@@ -98,6 +104,7 @@ export default function Home() {
                       backgroundColor: "rgba(255,255,255,0.08)"
                     }
                   }}
+                  onClick={handleDocButton}
                 >
                   Cómo funciona
                 </Button>

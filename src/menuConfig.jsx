@@ -22,6 +22,7 @@ export const menuItems = [
     { text: '🏠 Inicio', path: '/' },
     { text: '🧪 Labs', path: '/labs' },
     { text: '🎥 Cámaras', path: '/camaras' },
+    { text: '📒 Docs', path: '/docs' },
 ];
 
 
