@@ -2,7 +2,7 @@ import { Routes, Route } from 'react-router-dom'
 import ResponsiveDrawer from './ResponsiveDrawer'
 
 import Teoria from './pages/Teoria'
-import Laboratorios from './pages/Laboratorios'
+import RemotoAeropendulo from './pages/RemotoAeropendulo'
 import Home from "./pages/Home"
 import Camaras from "./pages/Camaras"
 import MarkdownComponent from "./pages/Markdown"
@@ -18,7 +18,7 @@ export default function App() {
 
         <Route index element={<Home />} />
         <Route path="teoria" element={<Teoria />} />
-        <Route path="laboratorios" element={<Laboratorios />} />
+        <Route path="remotoaeropendulo" element={<RemotoAeropendulo />} />
         <Route path="simulaciones" element={<Simulaciones />} />
         <Route path="markdown" element={<MarkdownComponent />} />
         <Route path="labs" element={<Labs />} />
