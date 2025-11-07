@@ -16,7 +16,7 @@ import Typography from '@mui/material/Typography';
 
 import { useNavigate, Outlet } from 'react-router-dom';
 import Logo from './assets/logo.png'; // Ajusta la ruta
-import { menuItems,drawerWidth  } from './menuConfig'
+import { menuItems, drawerWidth } from './menuConfig'
 
 
 
@@ -44,12 +44,12 @@ export default function ResponsiveDrawer(props) {
       setMobileOpen(!mobileOpen);
     }
   };
-    
+
 
 
   const drawer = (
     <div>
-      
+
       <Divider />
       <List>
         {menuItems.map((item) => (
@@ -70,89 +70,89 @@ export default function ResponsiveDrawer(props) {
 
   const container = window !== undefined ? () => window().document.body : undefined;
 
-    return <Box sx={{ display: 'flex' }}>
-            <CssBaseline />
-            <AppBar position="fixed">
-                <Toolbar>
-                    <IconButton
-                        color="inherit"
-                        aria-label="open drawer"
-                        edge="start"
-                        onClick={handleDrawerToggle}
-                        sx={{ mr: 2, display: { sm: 'none' } }}
-                    >
-                        <MenuIcon />
-                </IconButton>
-                
-                <Box
-                    component="img"
-                    src={Logo}
-                    alt="Logo ISA"
-                    
-                    sx={{
-                        display: { xs: 'none', sm: 'block' },
-                        height: 40,  // ajusta tamaño
-                        mr: 2,       // margen a la derecha del logo
-                    }}
-                />
-                <Typography variant="h6" noWrap component="div" sx={{ ml: 10}}>
-                        Laboratorios virtuales ISA UniOvi
-                    </Typography>
-                </Toolbar>
-            </AppBar>
-            <Box
-                component="nav"
-                sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-                aria-label="mailbox folders"
-            >
-                <Drawer
-                    container={container}
-                    variant="temporary"
-                    open={mobileOpen}
-                    onTransitionEnd={handleDrawerTransitionEnd}
-                    onClose={handleDrawerToggle}
-                    sx={{
-                        display: { xs: 'block', sm: 'none' },
-                        '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
-                    }}
-                    slotProps={{
-                        root: {
-                            keepMounted: true,
-                        },
-                    }}
-                >
-                    {drawer}
-                </Drawer>
-                <Drawer
-                variant="permanent"
-                sx={{
-                    display: { xs: 'none', sm: 'block' },
-                    '& .MuiDrawer-paper': {
-                        boxSizing: 'border-box',
-                        width: drawerWidth,
-                        top: '64px',
-                        height: 'calc(100% - 64px)',
-                    },
-                }}
-                open={true}
-                >
-                    {drawer}
-                </Drawer>
-            </Box>
+  return <Box sx={{ display: 'flex' }}>
+    <CssBaseline />
+    <AppBar position="fixed">
+      <Toolbar>
+        <IconButton
+          color="inherit"
+          aria-label="open drawer"
+          edge="start"
+          onClick={handleDrawerToggle}
+          sx={{ mr: 2, display: { sm: 'none' } }}
+        >
+          <MenuIcon />
+        </IconButton>
 
-            <Box
-                component="main"
-                sx={{
-                    flexGrow: 1,
-                  p: 0,
-                    width: { sm: `calc(100% - ${drawerWidth}px)` },
-                }}
-            >
-                <Outlet />
-            </Box>
+        <Box
+          component="img"
+          src={Logo}
+          alt="Logo ISA"
 
-        </Box> 
+          sx={{
+            display: { xs: 'none', sm: 'block' },
+            height: 40,  // ajusta tamaño
+            mr: 2,       // margen a la derecha del logo
+          }}
+        />
+        <Typography variant="h6" noWrap component="div" sx={{ ml: 10 }}>
+          Laboratorios virtuales ISA UniOvi
+        </Typography>
+      </Toolbar>
+    </AppBar>
+    <Box
+      component="nav"
+      sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
+      aria-label="mailbox folders"
+    >
+      <Drawer
+        container={container}
+        variant="temporary"
+        open={mobileOpen}
+        onTransitionEnd={handleDrawerTransitionEnd}
+        onClose={handleDrawerToggle}
+        sx={{
+          display: { xs: 'block', sm: 'none' },
+          '& .MuiDrawer-paper': { boxSizing: 'border-box', width: drawerWidth },
+        }}
+        slotProps={{
+          root: {
+            keepMounted: true,
+          },
+        }}
+      >
+        {drawer}
+      </Drawer>
+      <Drawer
+        variant="permanent"
+        sx={{
+          display: { xs: 'none', sm: 'block' },
+          '& .MuiDrawer-paper': {
+            boxSizing: 'border-box',
+            width: drawerWidth,
+            top: '64px',
+            height: 'calc(100% - 64px)',
+          },
+        }}
+        open={true}
+      >
+        {drawer}
+      </Drawer>
+    </Box>
 
-   
-  
+    <Box
+      component="main"
+      sx={{
+        flexGrow: 1,
+        p: 0,
+        width: { sm: `calc(100% - ${drawerWidth}px)` },
+      }}
+    >
+      <Outlet />
+    </Box>
+
+  </Box>
+
+
+
 }

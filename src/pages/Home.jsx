@@ -1,39 +1,47 @@
-import { 
-  Box, 
-  Toolbar, 
-  Container, 
-  Typography, 
+import {
+  Box,
+  Toolbar,
+  Container,
+  Typography,
   Grid,
   Card,
   CardContent,
-  Button 
+  Button
 } from "@mui/material";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import MemoryIcon from "@mui/icons-material/Memory";
 import ScienceIcon from "@mui/icons-material/Science";
 import SchoolIcon from "@mui/icons-material/School";
+import { useNavigate } from 'react-router-dom';
 
 export default function Home() {
+  const navigate = useNavigate();
+  // Callback del botón de acceso
+  function handleAccessButton() {
+    navigate("/labs");
+  }
+
+
   return (
     <>
       {/* HERO SECTION */}
       <Box
-  sx={{
-    background: "radial-gradient(circle at top left, rgba(56,139,253,0.1), transparent 60%)",
-    color: "white",
-    pt: { xs: 8, md: 12 },
-    pb: { xs: 8, md: 10 },
-    borderBottom: "1px solid rgba(255,255,255,0.05)"
-  }}
+        sx={{
+          background: "radial-gradient(circle at top left, rgba(56,139,253,0.1), transparent 60%)",
+          color: "white",
+          pt: { xs: 8, md: 12 },
+          pb: { xs: 8, md: 10 },
+          borderBottom: "1px solid rgba(255,255,255,0.05)"
+        }}
       >
         <Toolbar />
         <Container maxWidth="lg">
           <Grid container spacing={4} alignItems="center">
             {/* Texto principal */}
             <Grid item xs={12} md={7}>
-              <Typography 
-                variant="h3" 
-                fontWeight={600} 
+              <Typography
+                variant="h3"
+                fontWeight={600}
                 gutterBottom
                 sx={{
                   lineHeight: 1.2,
@@ -43,22 +51,22 @@ export default function Home() {
                 Laboratorios virtual ISA UniOvi
               </Typography>
 
-              <Typography 
-                variant="h6" 
-                sx={{ 
+              <Typography
+                variant="h6"
+                sx={{
                   color: "rgba(255,255,255,0.8)",
                   maxWidth: "60ch",
                   lineHeight: 1.5,
                 }}
               >
-              Accede a hardware real, simulaciones guiadas
-              y experimentos de control y automatización —
-              en cualquier momento y desde cualquier lugar.
+                Accede a hardware real, simulaciones guiadas
+                y experimentos de control y automatización —
+                en cualquier momento y desde cualquier lugar.
               </Typography>
 
               <Box sx={{ mt: 4, display: "flex", flexWrap: "wrap", gap: 2 }}>
-                <Button 
-                  variant="contained" 
+                <Button
+                  variant="contained"
                   color="primary"
                   sx={{
                     backgroundColor: "#60a5fa",
@@ -68,13 +76,16 @@ export default function Home() {
                     borderRadius: 2,
                     px: 3,
                     py: 1.2
+
                   }}
+                  onClick={handleAccessButton}
+
                 >
                   Accede
                 </Button>
 
-                <Button 
-                  variant="outlined" 
+                <Button
+                  variant="outlined"
                   sx={{
                     color: "white",
                     borderColor: "rgba(255,255,255,0.4)",
@@ -92,9 +103,9 @@ export default function Home() {
                 </Button>
               </Box>
 
-              <Typography 
-                variant="caption" 
-                sx={{ 
+              <Typography
+                variant="caption"
+                sx={{
                   display: "block",
                   mt: 3,
                   color: "rgba(255,255,255,0.5)"
@@ -104,58 +115,7 @@ export default function Home() {
               </Typography>
             </Grid>
 
-            {/* Bloque visual decorativo */}
-            <Grid 
-              item 
-              xs={12} 
-              md={5} 
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-              }}
-            >
-              <Box
-                sx={{
-                  backgroundColor: "rgba(255,255,255,0.07)",
-                  border: "1px solid rgba(255,255,255,0.15)",
-                  borderRadius: 4,
-                  p: 3,
-                  minWidth: 260,
-                  maxWidth: 320,
-                  boxShadow: "0 24px 60px rgba(0,0,0,0.7)",
-                }}
-              >
-                <Typography variant="body2" color="white" fontWeight={600} gutterBottom>
-                  Live Plant Control
-                </Typography>
-                <Typography 
-                  variant="caption" 
-                  sx={{ color: "rgba(255,255,255,0.7)" }}
-                >
-                  Connect to real equipment remotely and
-                  tune controllers in real time without
-                  being in the physical lab.
-                </Typography>
 
-                <Box
-                  sx={{
-                    mt: 2,
-                    backgroundColor: "rgba(0,0,0,0.4)",
-                    borderRadius: 2,
-                    height: 120,
-                    border: "1px solid rgba(255,255,255,0.1)",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    fontSize: "0.75rem",
-                    color: "rgba(255,255,255,0.6)",
-                    textAlign: "center"
-                  }}
-                >
-                  (mini preview / graph / screenshot del SCADA / planta real aquí)
-                </Box>
-              </Box>
-            </Grid>
           </Grid>
         </Container>
       </Box>
@@ -163,10 +123,10 @@ export default function Home() {
       {/* BENEFICIOS / VALOR PARA EL ALUMNO */}
       <Container maxWidth="lg" style={{ marginTop: "3rem", marginBottom: "4rem" }}>
         <Grid container spacing={3}>
-          
+
           <Grid item xs={12} md={4}>
-            <Card 
-              sx={{ 
+            <Card
+              sx={{
                 height: "100%",
                 borderRadius: 3,
                 boxShadow: "0 24px 40px rgba(0,0,0,0.08)"
@@ -187,8 +147,8 @@ export default function Home() {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <Card 
-              sx={{ 
+            <Card
+              sx={{
                 height: "100%",
                 borderRadius: 3,
                 boxShadow: "0 24px 40px rgba(0,0,0,0.08)"
@@ -209,8 +169,8 @@ export default function Home() {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <Card 
-              sx={{ 
+            <Card
+              sx={{
                 height: "100%",
                 borderRadius: 3,
                 boxShadow: "0 24px 40px rgba(0,0,0,0.08)"
@@ -231,8 +191,8 @@ export default function Home() {
           </Grid>
 
           <Grid item xs={12} md={4}>
-            <Card 
-              sx={{ 
+            <Card
+              sx={{
                 height: "100%",
                 borderRadius: 3,
                 boxShadow: "0 24px 40px rgba(0,0,0,0.08)"
@@ -256,33 +216,33 @@ export default function Home() {
       </Container>
 
       {/* BLOQUE DE TEXTO EXPLICATIVO / ABOUT */}
-      
-        <Container maxWidth="lg">
-          <Box
-            sx={{
-                background: "radial-gradient(circle at top left, rgba(56,139,253,0.1), transparent 60%)",
-                color: "white",
-                pt: { xs: 8, md: 12 },
-            pb: { xs: 8, md: 10 },
-                px: { xs: 2, md: 3 }, 
-                borderBottom: "1px solid rgba(255,255,255,0.05)"
-              }}>
-            <Typography variant="h5" fontWeight={600} gutterBottom>
-              ¿Por qué es necesario esta plataforma?
-            </Typography>
 
-            <Typography 
-              variant="body1" 
-              color="text.secondary" 
-              sx={{ lineHeight: 1.6 }}
-            >
-              La formación en ingeniería requiere un equilibrio entre la teoría, la simulación y la práctica real. Esta plataforma ha sido diseñada para potenciar ese equilibrio, ofreciendo a estudiantes y profesores un acceso continuo y flexible a laboratorios en línea, disponibles a través de la web.
-              Desarrollado en la Universidad de Oviedo, este proyecto tiene como objetivo fortalecer el aprendizaje híbrido en los estudios de ingeniería de automatización y control mediante un entorno integrado que combina ejercicios guiados de simulación, experimentos remotos con equipos reales.
-              Al extender el aprendizaje práctico más allá de los límites de las sesiones de laboratorio tradicionales, el portal fomenta una comprensión más profunda, una mayor motivación y una igualdad de acceso a una formación práctica de alta calidad para todos los estudiantes.
-            </Typography>
-          </Box>
-        </Container>
-      
+      <Container maxWidth="lg">
+        <Box
+          sx={{
+            background: "radial-gradient(circle at top left, rgba(56,139,253,0.1), transparent 60%)",
+            color: "white",
+            pt: { xs: 8, md: 12 },
+            pb: { xs: 8, md: 10 },
+            px: { xs: 2, md: 3 },
+            borderBottom: "1px solid rgba(255,255,255,0.05)"
+          }}>
+          <Typography variant="h5" fontWeight={600} gutterBottom>
+            ¿Por qué es necesario esta plataforma?
+          </Typography>
+
+          <Typography
+            variant="body1"
+            color="text.secondary"
+            sx={{ lineHeight: 1.6 }}
+          >
+            La formación en ingeniería requiere un equilibrio entre la teoría, la simulación y la práctica real. Esta plataforma ha sido diseñada para potenciar ese equilibrio, ofreciendo a estudiantes y profesores un acceso continuo y flexible a laboratorios en línea, disponibles a través de la web.
+            Desarrollado en la Universidad de Oviedo, este proyecto tiene como objetivo fortalecer el aprendizaje híbrido en los estudios de ingeniería de automatización y control mediante un entorno integrado que combina ejercicios guiados de simulación, experimentos remotos con equipos reales.
+            Al extender el aprendizaje práctico más allá de los límites de las sesiones de laboratorio tradicionales, el portal fomenta una comprensión más profunda, una mayor motivación y una igualdad de acceso a una formación práctica de alta calidad para todos los estudiantes.
+          </Typography>
+        </Box>
+      </Container>
+
     </>
   );
 }

@@ -7,7 +7,7 @@ import Home from "./pages/Home"
 import Camaras from "./pages/Camaras"
 import MarkdownComponent from "./pages/Markdown"
 import Simulaciones from "./pages/Simulaciones"
-
+import Labs from "./pages/Labs"
 
 
 export default function App() {
@@ -21,6 +21,7 @@ export default function App() {
         <Route path="laboratorios" element={<Laboratorios />} />
         <Route path="simulaciones" element={<Simulaciones />} />
         <Route path="markdown" element={<MarkdownComponent />} />
+        <Route path="labs" element={<Labs />} />
         <Route path="camaras" element={<Camaras />} /> 
       </Route>
     </Routes>
