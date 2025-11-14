@@ -4,6 +4,7 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm install
 COPY . .
+ENV VITE_SOCKET_URL="http://156.35.152.161:8002"
 RUN npm run build
 
 # Servir con Nginx

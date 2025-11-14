@@ -1,31 +1,55 @@
-// En tu componente React (JSX/TSX)
-export default function CameraMiniViewIframe() {
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import Box from "@mui/material/Box";
+
+export default function CameraMiniViewIframe({ WHEP_ADDR, descripcion }) {
     return (
-        <div
-            style={{
-                position: "fixed",
-                bottom: 20,
-                right: 20,
-                width: 260,
-                height: 150,
-                borderRadius: 12,
+
+        <Card
+            elevation={4}
+            sx={{
+                borderRadius: 2,
                 overflow: "hidden",
-                border: "1px solid rgba(0,0,0,0.2)",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.2)",
-                background: "#000",
-                zIndex: 9999,
+                bgcolor: "black",
+                display: "flex",
+                flexDirection: "column",
             }}
         >
-            <iframe
-                src="http://156.35.152.161:8889/tapo"
-                title="Cam Tapo"
-                style={{
-                    width: "100%",
-                    height: "100%",
-                    border: "none",
-                }}
-                allow="camera; microphone; fullscreen; autoplay"
-            />
-        </div>
+            {descripcion && (
+                <CardHeader
+                    title={descripcion}
+                    sx={{
+                        py: 1,
+                        "& .MuiCardHeader-title": {
+                            fontSize: 14,
+                        },
+                        bgcolor: "#111",
+                        color: "#fff",
+                    }}
+                />
+            )}
+
+            <CardContent sx={{ p: 0 }}>
+                {/* Contenedor con relación de aspecto 16:9 */}
+                <Box
+                    sx={{
+                        display: "flex"
+                    }}
+                >
+                    <Box
+                        component="iframe"
+                        src={WHEP_ADDR}
+                        title={descripcion || "Cam Tapo"}
+                        sx={{
+                            display: "flex",
+                            border: "none",
+                        }}
+                        allow="camera; microphone; fullscreen; autoplay"
+                    />
+                </Box>
+            </CardContent>
+        </Card>
+
     );
 }

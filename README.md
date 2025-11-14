@@ -20,5 +20,5 @@ docker build -t react-vite-nginx:v0.1 .
 
 Para ejecutar el contenedor:
 ```bash
-docker run -d -p 5000:80 --name react-vite-nginx react-vite-nginx:v0.1
+docker run -d -p 5000:80 --name react-vite-nginx --network virtyremlab-net react-vite-nginx:v0.1
 ```

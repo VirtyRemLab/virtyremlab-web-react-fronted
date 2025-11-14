@@ -9,6 +9,8 @@ import MarkdownComponent from "./pages/Markdown"
 import Simulaciones from "./pages/Simulaciones"
 import Labs from "./pages/Labs"
 import Docs from "./pages/Docs"
+import PendulumSimulator from "./pages/PendulumSimulator"
+
 
 export default function App() {
   return (
@@ -24,6 +26,7 @@ export default function App() {
         <Route path="labs" element={<Labs />} />
         <Route path="camaras" element={<Camaras />} />
         <Route path="docs" element={<Docs />} />
+        <Route path="sim_pendulo" element={<PendulumSimulator />} />
       </Route>
     </Routes>
 

@@ -23,8 +23,26 @@ import MenuItem from "@mui/material/MenuItem";
 import Chip from "@mui/material/Chip";
 import Tooltip from "@mui/material/Tooltip";
 import CircleIcon from "@mui/icons-material/Circle";
+import CameraMiniViewIframe from "../media/CameraMiniViewIframe";
+
+
+
+
+const getSocketUrl = () => {
+  // 1. Intentar leer de variable de entorno (Vite)
+  const envUrl = import.meta.env.VITE_SOCKET_URL;
+  if (envUrl) return envUrl;
+
+
+
+  return "http://localhost:8002";
+
+
+
+};
 
 export default function RemotoAeropendulo() {
+  const WHEP_ADDR = "http://156.35.152.161:8889/tapo"
   const socketRef = useRef();
 
   const [y, sety] = useState(Array(100).fill(0));
@@ -42,7 +60,7 @@ export default function RemotoAeropendulo() {
   const [aeroState, setAeroState] = useState(null);
 
   useEffect(() => {
-    socketRef.current = io("http://localhost:8002");
+    socketRef.current = io(getSocketUrl());
 
     socketRef.current.on("connect", () => {
       console.log("✅ Conectado:", socketRef.current.id);
@@ -141,68 +159,85 @@ export default function RemotoAeropendulo() {
         </Stack>
 
         <Box sx={{ flexGrow: 1 }}>
-          {/* Configuración de los comandos */}
-          <Grid size={4}>
-            <Card sx={{ backgroundColor: "#2f2d2dff" }}>
-              <CardContent>
-                <Stack spacing={2}>
-                  <Typography variant="h5" gutterBottom>
-                    Comandos de prueba
-                  </Typography>
+          {/* Control del equipo */}
 
-                  {/* POWER ON */}
-                  <FormGroup>
-                    <FormControlLabel
-                      control={<Switch checked={powerOn} onChange={cllback_on} />}
-                      label={`POWER ${powerOn ? "ON" : "OFF"}`}
-                    />
-                  </FormGroup>
+          <Grid container spacing={2} alignItems="center">
+            <Grid size={4}>
+              <Card sx={{ backgroundColor: "#2f2d2dff" }}>
+                <CardContent>
+                  <Stack spacing={2}>
+                    <Typography variant="h5" gutterBottom>
+                      Control del equipo
+                    </Typography>
 
-                  {/* Selector de modo visible solo cuando el sistema está en READY */}
-                  {powerOn == true && (
-                    <FormControl fullWidth>
-                      <InputLabel id="modo-select-label">Selecciona modo</InputLabel>
-                      <Select
-                        labelId="modo-select-label"
-                        id="modo-select"
-                        label="Selecciona modo"
-                        value={selectedMode}
-                        onChange={handleMultiModeChange}
-                      >
-                        <MenuItem value={"test"}>TEST</MenuItem>
-                        <MenuItem value={"pid"}>PID</MenuItem>
-                      </Select>
-                    </FormControl>
-                  )}
-                  <Button variant="contained" color="warning" onClick={handleReset}>
-                    Reset
-                  </Button>
-
-                  <Divider />
-
-                  {/* Vel. Manual */}
-                  {selectedMode == "test" && (
-                    <Box>
-                      <Typography variant="subtitle1" gutterBottom>
-                        Vel. Manual: {velManual}
-                      </Typography>
-                      <Slider
-                        value={velManual}
-                        min={-600}
-                        max={600}
-                        step={5}
-                        valueLabelDisplay="auto"
-                        onChange={handleVelChange}
-                        onChangeCommitted={handleVelCommit}
-                        sx={{ mt: 1 }}
+                    {/* POWER ON */}
+                    <FormGroup>
+                      <FormControlLabel
+                        control={<Switch checked={powerOn} onChange={cllback_on} />}
+                        label={`POWER ${powerOn ? "ON" : "OFF"}`}
                       />
-                    </Box>
-                  )}
+                    </FormGroup>
 
-                  <Divider />
-                </Stack>
-              </CardContent>
-            </Card>
+                    {/* Selector de modo visible solo cuando el sistema está en READY */}
+                    {powerOn == true && (
+                      <FormControl fullWidth>
+                        <InputLabel id="modo-select-label">Selecciona modo</InputLabel>
+                        <Select
+                          labelId="modo-select-label"
+                          id="modo-select"
+                          label="Selecciona modo"
+                          value={selectedMode}
+                          onChange={handleMultiModeChange}
+                        >
+                          <MenuItem value={"test"}>TEST</MenuItem>
+                          <MenuItem value={"pid"}>PID</MenuItem>
+                        </Select>
+                      </FormControl>
+                    )}
+                    <Button variant="contained" color="warning" onClick={handleReset}>
+                      Reset
+                    </Button>
+
+                    <Divider />
+
+                    {/* Vel. Manual */}
+                    {selectedMode == "test" && (
+                      <Box>
+                        <Typography variant="subtitle1" gutterBottom>
+                          Vel. Manual: {velManual}
+                        </Typography>
+                        <Slider
+                          value={velManual}
+                          min={-600}
+                          max={600}
+                          step={5}
+                          valueLabelDisplay="auto"
+                          onChange={handleVelChange}
+                          onChangeCommitted={handleVelCommit}
+                          sx={{ mt: 1 }}
+                        />
+                      </Box>
+                    )}
+
+                    <Divider />
+                  </Stack>
+                </CardContent>
+              </Card>
+            </Grid>
+            <Grid size={4}>
+              <Stack spacing={2}>
+                <Aeropendulo_svg angle={angle} />
+              </Stack>
+            </Grid>
+            <Grid size={4}>
+              <Stack spacing={2}>
+                <CameraMiniViewIframe
+                  WHEP_ADDR="http://156.35.152.161:8889/tapo"
+                  descripcion={""}
+                />
+              </Stack>
+            </Grid>
+
           </Grid>
 
           {/* Grid flexible */}
@@ -221,11 +256,7 @@ export default function RemotoAeropendulo() {
               </Stack>
             </Grid>
 
-            <Grid size={4}>
-              <Stack spacing={2}>
-                <Aeropendulo_svg angle={angle} />
-              </Stack>
-            </Grid>
+
           </Grid>
 
           {/* Monitor de estado */}

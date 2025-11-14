@@ -23,7 +23,8 @@ export const menuItems = [
     { text: '🧪 Labs', path: '/labs' },
     { text: '🎥 Cámaras', path: '/camaras' },
     { text: '📒 Docs', path: '/docs' },
-    { text: 'Prueba', path: '/remotoaeropendulo' }
+    { text: 'Prueba', path: '/remotoaeropendulo' },
+    { text: 'Simulador Pendulo', path: '/sim_pendulo' }
 ];
 
 
