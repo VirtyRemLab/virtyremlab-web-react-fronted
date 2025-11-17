@@ -159,13 +159,33 @@ export default function Aeropendulo() {
                                     >
                                         Contenido didáctico
                                     </Typography>
+
                                 </AccordionSummary>
                                 <AccordionDetails>
                                     <Box maxWidth="md">
-                                        {/* Ejemplo de contenido */}
-                                        {/* <UnderlineButton label="Introducción al aeropéndulo" to="/docs/aeropendulo" /> */}
-                                        {/* <OpenInNewIcon sx={{ my: -0.5 }} /> */}
-                                        Aquí puedes insertar PDFs, teoría o recursos formativos.
+                                        <Box display="flex" alignItems="center" gap={1}>
+
+                                            <a
+                                                href="/pdf/DescripciónAeropendulo.pdf"
+                                                download
+                                                style={{ color: "#2F85EE", textDecoration: "none", fontWeight: 500 }}
+                                            >
+                                                Descripción detallada del sistema
+                                            </a>
+                                            <OpenInNewIcon sx={{ fontSize: 18, color: "#2F85EE", mb: 0.3 }} />
+                                        </Box>
+                                        <Box display="flex" alignItems="center" gap={1}>
+                                            <a
+                                                href="/pdf/Practica1_aeropendulo.pdf"
+                                                download
+                                                style={{ color: "#2F85EE", textDecoration: "none", fontWeight: 500 }}
+                                            >
+                                                Práctica control PID
+                                            </a>
+
+
+                                            <OpenInNewIcon sx={{ fontSize: 18, color: "#2F85EE", mb: 0.3 }} />
+                                        </Box>
                                     </Box>
                                 </AccordionDetails>
                             </Accordion>
