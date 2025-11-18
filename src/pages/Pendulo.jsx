@@ -72,6 +72,10 @@ export default function Pendulo() {
                             />
 
 
+
+
+
+
                             <Accordion
                                 sx={{
                                     background: "rgba(255,255,255,0.06)",
@@ -187,7 +191,7 @@ export default function Pendulo() {
                                         {/* Ejemplo basado en tu snippet */}
                                         {/* <UnderlineButton label="Aeropendulum PID" to="/virtyremlab/aeropenduloPID" /> */}
                                         {/* <OpenInNewIcon sx={{ my: -0.5 }} /> */}
-                                        En esta lista puedes encontrar los simuladores disponibles para el aero pendulo.
+                                        En esta lista puedes encontrar los simuladores disponibles para el péndulo.
                                     </Box>
                                     <Box display="flex" alignItems="center" gap={1}>
                                         <Link

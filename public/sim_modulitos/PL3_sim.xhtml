@@ -1,0 +1,1556 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
+  <head>
+    <meta charset="utf-8" />
+    <title>Simulador práctica de laboratorio 1</title>
+    <link rel="stylesheet"  type="text/css" href="_ejs_library/css/ejss.css" />
+    <script src="_ejs_library/scripts/common_script.js"></script>
+    <script src="_ejs_library/scripts/textresizedetector.js"></script>
+    <script src="_ejs_library/ejsS.v1.min.js"></script>
+<script type="text/javascript"><!--//--><![CDATA[//><!--
+/* _inputParameters: an object with different values for the model parameters */
+function SimulModul(_topFrame,_libraryPath,_codebasePath, _inputParameters) {
+  var _model = EJSS_CORE.createAnimationLMS();
+  var _view;
+  var _isPlaying = false;
+  var _isPaused = true;
+  var _isMobile = (navigator===undefined) ? false : navigator.userAgent.match(/iPhone|iPad|iPod|Android|BlackBerry|Opera Mini|IEMobile/i);
+
+var _stringProperties = {};
+  var _tools = {
+    showInputDialog : EJSS_INTERFACE.BoxPanel.showInputDialog,
+    showOkDialog : EJSS_INTERFACE.BoxPanel.showOkDialog,
+    showOkCancelDialog : EJSS_INTERFACE.BoxPanel.showOkCancelDialog,
+    downloadText: EJSS_TOOLS.File.downloadText,
+    uploadText: function(action) { EJSS_TOOLS.File.uploadText(_model,action); } 
+  };
+
+  function _play()  { _isPaused = false; _isPlaying = true;  _model.play();  }
+  function _pause() { _isPaused = true;  _isPlaying = false; _model.pause(); }
+  function _step()  { _pause();  _model.step(); }
+  function _reset() { _model.reset();  _isPaused = _model.isPaused(); _isPlaying = _model.isPlaying(); }
+  _model._play  = _play;
+  _model._pause = _pause;
+  _model._step  = _step;
+  _model._reset = _reset;
+  function _update() { _model.update(); }
+  function _initialize() { _model.initialize(); }
+  function _setFPS(_fps) { _model.setFPS(_fps); }
+  function _setDelay(_delay) { _model.setDelay(_delay); }
+  function _setStepsPerDisplay(_spd) { _model.setStepsPerDisplay(_spd); }
+  function _setUpdateView(_updateView) { _model.setUpdateView(_updateView); }
+  function _setAutoplay(_auto) { _model.setAutoplay(_auto); }
+  function _println(_message) { console.log(_message); }
+
+  function _breakAfterThisPage() { _model.setShouldBreak(true); }
+
+  function _resetSolvers() { if (_model.resetSolvers) _model.resetSolvers(); }
+
+  function _saveText(name,type,content) { if (_model.saveText) _model.saveText(name,type,content); }
+
+  function _saveState(name) { if (_model.saveState) _model.saveState(name); }
+
+  function _saveImage(name,panelname) { if (_model.saveImage) _model.saveImage(name,panelname); }
+
+  function _readState(url,type) { if (_model.readState) _model.readState(url,type); }
+
+  function _readText(url,type,varname) { if (_model.readText) _model.readText(url,type,varname); }
+
+  function _getStringProperty(propertyName) {
+    var _value = _stringProperties[propertyName];
+    if (_value===undefined) return propertyName;
+    else return _value;
+  }
+  var __pagesEnabled = [];
+  function _setPageEnabled(pageName,enabled) { __pagesEnabled[pageName] = enabled; }
+
+  var t; // EjsS Model.Variables.VariablesDinámicas.t
+  var dt; // EjsS Model.Variables.VariablesDinámicas.dt
+
+  var tau; // EjsS Model.Variables.Sist1order.tau
+  var y1; // EjsS Model.Variables.Sist1order.y1
+  var r1; // EjsS Model.Variables.Sist1order.r1
+
+  var y2; // EjsS Model.Variables.Sis2Order.y2
+  var r2; // EjsS Model.Variables.Sis2Order.r2
+  var dy2; // EjsS Model.Variables.Sis2Order.dy2
+  var wn; // EjsS Model.Variables.Sis2Order.wn
+  var chi; // EjsS Model.Variables.Sis2Order.chi
+  var MP; // EjsS Model.Variables.Sis2Order.MP
+
+  var A; // EjsS Model.Variables.Constantes.A
+  var Duration; // EjsS Model.Variables.Constantes.Duration
+  var f; // EjsS Model.Variables.Constantes.f
+
+  var S; // EjsS Model.Variables.RelacionesFijas.S
+  var C; // EjsS Model.Variables.RelacionesFijas.C
+
+  var S_fuente_x; // EjsS Model.Variables.ElementoDashboard.S_fuente_x
+  var S_fuente_y; // EjsS Model.Variables.ElementoDashboard.S_fuente_y
+  var S_S1_x; // EjsS Model.Variables.ElementoDashboard.S_S1_x
+  var S_S1_y; // EjsS Model.Variables.ElementoDashboard.S_S1_y
+  var S_S2_x; // EjsS Model.Variables.ElementoDashboard.S_S2_x
+  var S_S2_y; // EjsS Model.Variables.ElementoDashboard.S_S2_y
+  var S_PID_x; // EjsS Model.Variables.ElementoDashboard.S_PID_x
+  var S_PID_y; // EjsS Model.Variables.ElementoDashboard.S_PID_y
+  var resetPlots; // EjsS Model.Variables.ElementoDashboard.resetPlots
+
+  var en_I; // EjsS Model.Variables.PID.en_I
+  var en_D; // EjsS Model.Variables.PID.en_D
+  var Kp; // EjsS Model.Variables.PID.Kp
+  var Td; // EjsS Model.Variables.PID.Td
+  var Ti; // EjsS Model.Variables.PID.Ti
+  var Ti_; // EjsS Model.Variables.PID.Ti_
+  var Td_; // EjsS Model.Variables.PID.Td_
+  var i; // EjsS Model.Variables.PID.i
+  var rPID; // EjsS Model.Variables.PID.rPID
+  var ri; // EjsS Model.Variables.PID.ri
+  var rd; // EjsS Model.Variables.PID.rd
+  var d; // EjsS Model.Variables.PID.d
+  var drd; // EjsS Model.Variables.PID.drd
+  var yPID; // EjsS Model.Variables.PID.yPID
+  var drPID; // EjsS Model.Variables.PID.drPID
+  var ddrPID; // EjsS Model.Variables.PID.ddrPID
+
+  var _privateOdesList;
+  var _ODEi_evolution1;
+  var userEvents1=[];
+
+  _model.getOdes = function() { return [_ODEi_evolution1]; };
+
+  _model.removeEvents = function(){
+    userEvents1=[];
+  };
+
+  function _serialize() { return _model.serialize(); }
+
+  _model._userSerialize = function() {
+    return {
+      t : t,
+      dt : dt,
+      tau : tau,
+      y1 : y1,
+      r1 : r1,
+      y2 : y2,
+      r2 : r2,
+      dy2 : dy2,
+      wn : wn,
+      chi : chi,
+      MP : MP,
+      A : A,
+      Duration : Duration,
+      f : f,
+      S : S,
+      C : C,
+      S_fuente_x : S_fuente_x,
+      S_fuente_y : S_fuente_y,
+      S_S1_x : S_S1_x,
+      S_S1_y : S_S1_y,
+      S_S2_x : S_S2_x,
+      S_S2_y : S_S2_y,
+      S_PID_x : S_PID_x,
+      S_PID_y : S_PID_y,
+      resetPlots : resetPlots,
+      en_I : en_I,
+      en_D : en_D,
+      Kp : Kp,
+      Td : Td,
+      Ti : Ti,
+      Ti_ : Ti_,
+      Td_ : Td_,
+      i : i,
+      rPID : rPID,
+      ri : ri,
+      rd : rd,
+      d : d,
+      drd : drd,
+      yPID : yPID,
+      drPID : drPID,
+      ddrPID : ddrPID
+    };
+  };
+
+  function _serializePublic() { return _model.serializePublic(); }
+
+  _model._userSerializePublic = function() {
+    return {
+      t : t,
+      dt : dt,
+      tau : tau,
+      y1 : y1,
+      r1 : r1,
+      y2 : y2,
+      r2 : r2,
+      dy2 : dy2,
+      wn : wn,
+      chi : chi,
+      MP : MP,
+      A : A,
+      Duration : Duration,
+      f : f,
+      S : S,
+      C : C,
+      S_fuente_x : S_fuente_x,
+      S_fuente_y : S_fuente_y,
+      S_S1_x : S_S1_x,
+      S_S1_y : S_S1_y,
+      S_S2_x : S_S2_x,
+      S_S2_y : S_S2_y,
+      S_PID_x : S_PID_x,
+      S_PID_y : S_PID_y,
+      resetPlots : resetPlots,
+      en_I : en_I,
+      en_D : en_D,
+      Kp : Kp,
+      Td : Td,
+      Ti : Ti,
+      Ti_ : Ti_,
+      Td_ : Td_,
+      i : i,
+      rPID : rPID,
+      ri : ri,
+      rd : rd,
+      d : d,
+      drd : drd,
+      yPID : yPID,
+      drPID : drPID,
+      ddrPID : ddrPID
+    };
+  };
+
+  _model._readParameters = function(json) {
+    if(typeof json.t != "undefined") t = json.t;
+    if(typeof json.dt != "undefined") dt = json.dt;
+    if(typeof json.tau != "undefined") tau = json.tau;
+    if(typeof json.y1 != "undefined") y1 = json.y1;
+    if(typeof json.r1 != "undefined") r1 = json.r1;
+    if(typeof json.y2 != "undefined") y2 = json.y2;
+    if(typeof json.r2 != "undefined") r2 = json.r2;
+    if(typeof json.dy2 != "undefined") dy2 = json.dy2;
+    if(typeof json.wn != "undefined") wn = json.wn;
+    if(typeof json.chi != "undefined") chi = json.chi;
+    if(typeof json.MP != "undefined") MP = json.MP;
+    if(typeof json.A != "undefined") A = json.A;
+    if(typeof json.Duration != "undefined") Duration = json.Duration;
+    if(typeof json.f != "undefined") f = json.f;
+    if(typeof json.S != "undefined") S = json.S;
+    if(typeof json.C != "undefined") C = json.C;
+    if(typeof json.S_fuente_x != "undefined") S_fuente_x = json.S_fuente_x;
+    if(typeof json.S_fuente_y != "undefined") S_fuente_y = json.S_fuente_y;
+    if(typeof json.S_S1_x != "undefined") S_S1_x = json.S_S1_x;
+    if(typeof json.S_S1_y != "undefined") S_S1_y = json.S_S1_y;
+    if(typeof json.S_S2_x != "undefined") S_S2_x = json.S_S2_x;
+    if(typeof json.S_S2_y != "undefined") S_S2_y = json.S_S2_y;
+    if(typeof json.S_PID_x != "undefined") S_PID_x = json.S_PID_x;
+    if(typeof json.S_PID_y != "undefined") S_PID_y = json.S_PID_y;
+    if(typeof json.resetPlots != "undefined") resetPlots = json.resetPlots;
+    if(typeof json.en_I != "undefined") en_I = json.en_I;
+    if(typeof json.en_D != "undefined") en_D = json.en_D;
+    if(typeof json.Kp != "undefined") Kp = json.Kp;
+    if(typeof json.Td != "undefined") Td = json.Td;
+    if(typeof json.Ti != "undefined") Ti = json.Ti;
+    if(typeof json.Ti_ != "undefined") Ti_ = json.Ti_;
+    if(typeof json.Td_ != "undefined") Td_ = json.Td_;
+    if(typeof json.i != "undefined") i = json.i;
+    if(typeof json.rPID != "undefined") rPID = json.rPID;
+    if(typeof json.ri != "undefined") ri = json.ri;
+    if(typeof json.rd != "undefined") rd = json.rd;
+    if(typeof json.d != "undefined") d = json.d;
+    if(typeof json.drd != "undefined") drd = json.drd;
+    if(typeof json.yPID != "undefined") yPID = json.yPID;
+    if(typeof json.drPID != "undefined") drPID = json.drPID;
+    if(typeof json.ddrPID != "undefined") ddrPID = json.ddrPID;
+  };
+
+  _model._readParametersPublic = function(json) {
+    if(typeof json.t != "undefined") t = json.t;
+    if(typeof json.dt != "undefined") dt = json.dt;
+    if(typeof json.tau != "undefined") tau = json.tau;
+    if(typeof json.y1 != "undefined") y1 = json.y1;
+    if(typeof json.r1 != "undefined") r1 = json.r1;
+    if(typeof json.y2 != "undefined") y2 = json.y2;
+    if(typeof json.r2 != "undefined") r2 = json.r2;
+    if(typeof json.dy2 != "undefined") dy2 = json.dy2;
+    if(typeof json.wn != "undefined") wn = json.wn;
+    if(typeof json.chi != "undefined") chi = json.chi;
+    if(typeof json.MP != "undefined") MP = json.MP;
+    if(typeof json.A != "undefined") A = json.A;
+    if(typeof json.Duration != "undefined") Duration = json.Duration;
+    if(typeof json.f != "undefined") f = json.f;
+    if(typeof json.S != "undefined") S = json.S;
+    if(typeof json.C != "undefined") C = json.C;
+    if(typeof json.S_fuente_x != "undefined") S_fuente_x = json.S_fuente_x;
+    if(typeof json.S_fuente_y != "undefined") S_fuente_y = json.S_fuente_y;
+    if(typeof json.S_S1_x != "undefined") S_S1_x = json.S_S1_x;
+    if(typeof json.S_S1_y != "undefined") S_S1_y = json.S_S1_y;
+    if(typeof json.S_S2_x != "undefined") S_S2_x = json.S_S2_x;
+    if(typeof json.S_S2_y != "undefined") S_S2_y = json.S_S2_y;
+    if(typeof json.S_PID_x != "undefined") S_PID_x = json.S_PID_x;
+    if(typeof json.S_PID_y != "undefined") S_PID_y = json.S_PID_y;
+    if(typeof json.resetPlots != "undefined") resetPlots = json.resetPlots;
+    if(typeof json.en_I != "undefined") en_I = json.en_I;
+    if(typeof json.en_D != "undefined") en_D = json.en_D;
+    if(typeof json.Kp != "undefined") Kp = json.Kp;
+    if(typeof json.Td != "undefined") Td = json.Td;
+    if(typeof json.Ti != "undefined") Ti = json.Ti;
+    if(typeof json.Ti_ != "undefined") Ti_ = json.Ti_;
+    if(typeof json.Td_ != "undefined") Td_ = json.Td_;
+    if(typeof json.i != "undefined") i = json.i;
+    if(typeof json.rPID != "undefined") rPID = json.rPID;
+    if(typeof json.ri != "undefined") ri = json.ri;
+    if(typeof json.rd != "undefined") rd = json.rd;
+    if(typeof json.d != "undefined") d = json.d;
+    if(typeof json.drd != "undefined") drd = json.drd;
+    if(typeof json.yPID != "undefined") yPID = json.yPID;
+    if(typeof json.drPID != "undefined") drPID = json.drPID;
+    if(typeof json.ddrPID != "undefined") ddrPID = json.ddrPID;
+  };
+
+  function _unserializePublic(json) { return _model.unserializePublic(json); }
+
+  _model._userUnserializePublic = function(json) {
+    _model._readParametersPublic(json);
+   _resetSolvers();
+   _model.update();
+  };
+
+  function _unserialize(json) { return _model.unserialize(json); }
+
+  _model._userUnserialize = function(json) {
+    _model._readParameters(json);
+   _resetSolvers();
+   _model.update();
+  };
+
+  _model.addToReset(function() {
+    __pagesEnabled["Página Inicio"] = true;
+    __pagesEnabled["Página Evolución"] = true;
+    __pagesEnabled["relacionesFijas"] = true;
+  });
+
+  _model.addToReset(function() {
+    t = 0.0; // EjsS Model.Variables.VariablesDinámicas.t
+    dt = 0.0002; // EjsS Model.Variables.VariablesDinámicas.dt
+  });
+
+  _model.addToReset(function() {
+    tau = 0.25; // EjsS Model.Variables.Sist1order.tau
+    y1 = 0.0; // EjsS Model.Variables.Sist1order.y1
+    r1 = 0.0; // EjsS Model.Variables.Sist1order.r1
+  });
+
+  _model.addToReset(function() {
+    y2 = 0.0; // EjsS Model.Variables.Sis2Order.y2
+    r2 = 0.0; // EjsS Model.Variables.Sis2Order.r2
+    dy2 = 0.0; // EjsS Model.Variables.Sis2Order.dy2
+    wn = 20; // EjsS Model.Variables.Sis2Order.wn
+    chi = 0.6; // EjsS Model.Variables.Sis2Order.chi
+    MP = 0.2; // EjsS Model.Variables.Sis2Order.MP
+  });
+
+  _model.addToReset(function() {
+    A = 1; // EjsS Model.Variables.Constantes.A
+    Duration = 5; // EjsS Model.Variables.Constantes.Duration
+    f = 1/Duration; // EjsS Model.Variables.Constantes.f
+  });
+
+  _model.addToReset(function() {
+    S = 0.0; // EjsS Model.Variables.RelacionesFijas.S
+    C = 0.0; // EjsS Model.Variables.RelacionesFijas.C
+  });
+
+  _model.addToReset(function() {
+    S_fuente_x = 2; // EjsS Model.Variables.ElementoDashboard.S_fuente_x
+    S_fuente_y = 7; // EjsS Model.Variables.ElementoDashboard.S_fuente_y
+    S_S1_x = 6.5; // EjsS Model.Variables.ElementoDashboard.S_S1_x
+    S_S1_y = 7; // EjsS Model.Variables.ElementoDashboard.S_S1_y
+    S_S2_x = 7.2; // EjsS Model.Variables.ElementoDashboard.S_S2_x
+    S_S2_y = 2.5; // EjsS Model.Variables.ElementoDashboard.S_S2_y
+    S_PID_x = 4.2; // EjsS Model.Variables.ElementoDashboard.S_PID_x
+    S_PID_y = 7; // EjsS Model.Variables.ElementoDashboard.S_PID_y
+    resetPlots = false; // EjsS Model.Variables.ElementoDashboard.resetPlots
+  });
+
+  _model.addToReset(function() {
+    en_I = 0.0; // EjsS Model.Variables.PID.en_I
+    en_D = 0.0; // EjsS Model.Variables.PID.en_D
+    Kp = 1; // EjsS Model.Variables.PID.Kp
+    Td = 0.01; // EjsS Model.Variables.PID.Td
+    Ti = 1; // EjsS Model.Variables.PID.Ti
+    Ti_ = 1; // EjsS Model.Variables.PID.Ti_
+    Td_ = 0.1; // EjsS Model.Variables.PID.Td_
+    i = 0.0; // EjsS Model.Variables.PID.i
+    rPID = 0.0; // EjsS Model.Variables.PID.rPID
+    ri = 0; // EjsS Model.Variables.PID.ri
+    rd = 0; // EjsS Model.Variables.PID.rd
+    d = 0.0; // EjsS Model.Variables.PID.d
+    drd = 0.0; // EjsS Model.Variables.PID.drd
+    yPID = 0.0; // EjsS Model.Variables.PID.yPID
+    drPID = 0.0; // EjsS Model.Variables.PID.drPID
+    ddrPID = 0.0; // EjsS Model.Variables.PID.ddrPID
+  });
+
+  if (_inputParameters) {
+    _inputParameters = _model.parseInputParameters(_inputParameters);
+    if (_inputParameters) _model.addToReset(function() { _model._readParameters(_inputParameters); });
+  }
+
+  _model.addToReset(function() {
+    _privateOdesList=[];
+    _ODEi_evolution1 = _ODE_evolution1();
+    _privateOdesList.push(_ODEi_evolution1);
+  });
+
+  _model.addToReset(function() {
+    _model.setAutoplay(false);
+    _model.setPauseOnPageExit(true);
+    _model.setFPS(100);
+    _model.setStepsPerDisplay(200);
+  });
+
+  function cuadrada (time) {  // > CustomCode.signals:1
+    val = 1*Math.cos(2*Math.PI*f*t - 1.25*Math.PI);  // > CustomCode.signals:2
+    if (val>=-0.2)  // > CustomCode.signals:3
+      return A ;  // > CustomCode.signals:4
+     else  // > CustomCode.signals:5
+       return 0.0;  // > CustomCode.signals:6
+  }  // > CustomCode.signals:7
+  function sin(time) {  // > CustomCode.signals:8
+    return A*Math.sin(2*Math.PI*f*t);  // > CustomCode.signals:9
+  }  // > CustomCode.signals:10
+
+  function updatePlots(){  // > CustomCode.plots:1
+      if (_model.isPlaying()){  // > CustomCode.plots:2
+        Object.keys(channels).forEach(function (key){  // > CustomCode.plots:3
+            channels[key]["value"] = outputs[channels[key]["Signal"]]["value"]        // > CustomCode.plots:4
+          });  // > CustomCode.plots:5
+      }  // > CustomCode.plots:6
+  }  // > CustomCode.plots:7
+
+  function guardarSim () {  // > CustomCode.GuardarSim:1
+      // > CustomCode.GuardarSim:2
+  text = "t = [" + SimData["t"] + "]; \n";  // > CustomCode.GuardarSim:3
+  text += "ch1 = [" + SimData["ch1"] + "]; \n";  // > CustomCode.GuardarSim:4
+  text += "ch2 = [" + SimData["ch2"] + "]; \n";  // > CustomCode.GuardarSim:5
+  text += "figure(); plot(t,ch1); hold on; plot(t,ch2)"  // > CustomCode.GuardarSim:6
+  navigator.clipboard.writeText(text).then(function() {  // > CustomCode.GuardarSim:7
+    console.log('Async: Copying to clipboard was successful!');  // > CustomCode.GuardarSim:8
+   }, function(err) {  // > CustomCode.GuardarSim:9
+    console.error('Async: Could not copy text: ', err);  // > CustomCode.GuardarSim:10
+   });  // > CustomCode.GuardarSim:11
+  }  // > CustomCode.GuardarSim:12
+
+  function updateInputs(){  // > CustomCode.conexiones:1
+      // > CustomCode.conexiones:2
+      // > CustomCode.conexiones:3
+    Object.keys(inputs).forEach(function(key){  // > CustomCode.conexiones:4
+      if (conexiones[key] != 'GND'){  // > CustomCode.conexiones:5
+        inputs[key]['value'] = outputs[conexiones[key]]['value'];   // > CustomCode.conexiones:6
+      }  // > CustomCode.conexiones:7
+     else{  // > CustomCode.conexiones:8
+         inputs[key]['value']=0.0;  // > CustomCode.conexiones:9
+       }  // > CustomCode.conexiones:10
+    });  // > CustomCode.conexiones:11
+   }  // > CustomCode.conexiones:12
+  function conneDispatcher (event) {  // > CustomCode.conexiones:13
+    margin =0.3;  // > CustomCode.conexiones:14
+    eventInput = this.data.element.getName();  // > CustomCode.conexiones:15
+    pos_x = this.data.point[0]  // > CustomCode.conexiones:16
+    pos_y = this.data.point[1]  // > CustomCode.conexiones:17
+    towards="GND"  // > CustomCode.conexiones:18
+    previousConn = "GND"  // > CustomCode.conexiones:19
+    Object.keys(inputs).forEach(function(key){  // > CustomCode.conexiones:20
+       if (conexiones[key] === eventInput)  // > CustomCode.conexiones:21
+         previousConn = key      // > CustomCode.conexiones:22
+        if( (pos_x >= inputs[key]['pos']['x']-margin) &&  (pos_x <= inputs[key]['pos']['x']+margin) && (pos_y >= inputs[key]['pos']['y']-margin) &&  (pos_y <= inputs[key]['pos']['y']+margin)){  // > CustomCode.conexiones:23
+          towards = key  // > CustomCode.conexiones:24
+         }  // > CustomCode.conexiones:25
+     } );  // > CustomCode.conexiones:26
+     // Si la nueva conexión es distinta a la anterior actualizamos el objeto conexiones  // > CustomCode.conexiones:27
+     if(previousConn != towards){  // > CustomCode.conexiones:28
+         conexiones[towards] = eventInput;  // > CustomCode.conexiones:29
+         conexiones[previousConn] = "GND";  // > CustomCode.conexiones:30
+         // Cambio de color para indicar la conexion  // > CustomCode.conexiones:31
+         if(towards != "GND")  // > CustomCode.conexiones:32
+            inputs[towards]["color"]= "#B03A2E";  // > CustomCode.conexiones:33
+         if(previousConn != "GND")  // > CustomCode.conexiones:34
+           inputs[previousConn]["color"] = "#1D62F6";         // > CustomCode.conexiones:35
+         console.log(towards)    // > CustomCode.conexiones:36
+         console.log(previousConn)  // > CustomCode.conexiones:37
+       }  // > CustomCode.conexiones:38
+  }  // > CustomCode.conexiones:39
+
+  _model.addToInitialization(function() {
+    if (!__pagesEnabled["Página Inicio"]) return;
+    DEBUG = true;  // > Initialization.Página Inicio:1
+    channels ={'ch1':{'Signal':'R','Value':0.0},  // > Initialization.Página Inicio:2
+               'ch2':{'Signal':'R','Value':0.0}  // > Initialization.Página Inicio:3
+               };  // > Initialization.Página Inicio:4
+    inputs = {'S1':{'value':0.0,'pos':{'x':5,'y':7},'color': "#1D62F6"},  // > Initialization.Página Inicio:5
+              'S2':{'value':0.0,'pos':{'x':7.2,'y':7},'color': "#1D62F6"},  // > Initialization.Página Inicio:6
+              'PID1':{'value':0.0,'pos':{'x':2.8,'y':7},'color': "#1D62F6"},  // > Initialization.Página Inicio:7
+              'PID2':{'value':0.0,'pos':{'x':2.8,'y':2.5},'color': "#1D62F6"}  // > Initialization.Página Inicio:8
+    };  // > Initialization.Página Inicio:9
+    var outputs = { 'R':{'value':0.0, 'pos':{'x':2,'y':7}},  // > Initialization.Página Inicio:10
+                'Y1':{'value':0.0, 'pos':{'x':6.5,'y':7}},  // > Initialization.Página Inicio:11
+                'Y2':{'value':0.0,'pos':{'x':7.2,'y':2.5}},  // > Initialization.Página Inicio:12
+                'U':{'value':0.0,'pos':{'x':4.2,'y':7}}  // > Initialization.Página Inicio:13
+      };  // > Initialization.Página Inicio:14
+    // Centrado en las entradas "S1 conectado a Fuente"  // > Initialization.Página Inicio:15
+    conexiones = {  // > Initialization.Página Inicio:16
+                  'S1':"GND",  // > Initialization.Página Inicio:17
+                  'S2':"GND",  // > Initialization.Página Inicio:18
+                  'PID1':"GND",  // > Initialization.Página Inicio:19
+                  'PID2':"GND"};  // > Initialization.Página Inicio:20
+    // json para guardar los datos de la simulación para su posterior exportación a Matlab  // > Initialization.Página Inicio:21
+    SimData ={"t": [],  // > Initialization.Página Inicio:22
+              "ch1":[],  // > Initialization.Página Inicio:23
+              "ch2":[]};  // > Initialization.Página Inicio:24
+  });
+
+  _model.addToInitialization(function() {
+    _initializeSolvers();
+  });
+
+  _model.addToEvolution(function() {
+    if (!__pagesEnabled["Página Evolución"]) return;
+    _ODEi_evolution1.step();
+  });
+
+  _model.addToFixedRelations(function() { _isPaused = _model.isPaused(); _isPlaying = _model.isPlaying(); });
+
+  _model.addToFixedRelations(function() {
+    if (!__pagesEnabled["relacionesFijas"]) return;
+    //yPID = Kp*rPID;  // > FixedRelations.relacionesFijas:1
+    S = sin(t)  // > FixedRelations.relacionesFijas:2
+    C = cuadrada(t);  // > FixedRelations.relacionesFijas:3
+    outputs = { 'R':{'value':C, 'pos':{'x':2,'y':7}},  // > FixedRelations.relacionesFijas:4
+                'Y1':{'value':y1, 'pos':{'x':6.5,'y':7}},  // > FixedRelations.relacionesFijas:5
+                'Y2':{'value':y2,'pos':{'x':7.2,'y':2.5}},  // > FixedRelations.relacionesFijas:6
+                'U':{'value':yPID,'pos':{'x':4.2,'y':7}}  // > FixedRelations.relacionesFijas:7
+      };  // > FixedRelations.relacionesFijas:8
+    rPID = inputs['PID1']['value'] - inputs['PID2']['value'];  // > FixedRelations.relacionesFijas:9
+    C = Td/0.001;  // > FixedRelations.relacionesFijas:10
+    yPID = Kp*rPID + en_I*i + Kp*C*en_D*(rPID-d);  // > FixedRelations.relacionesFijas:11
+    // Saturación salida PID  // > FixedRelations.relacionesFijas:12
+    yPID = Math.min(500,yPID)  // > FixedRelations.relacionesFijas:13
+    yPID = Math.max(-500,yPID)  // > FixedRelations.relacionesFijas:14
+    updateInputs();  // > FixedRelations.relacionesFijas:15
+    updatePlots();  // > FixedRelations.relacionesFijas:16
+    //console.table(channels)  // > FixedRelations.relacionesFijas:17
+    f = 1/Duration;  // > FixedRelations.relacionesFijas:18
+    if (t >= Duration){  // > FixedRelations.relacionesFijas:19
+       _pause();  // > FixedRelations.relacionesFijas:20
+    }  // > FixedRelations.relacionesFijas:21
+    // Crear una cola y tras un evento que se exporte al portapapeles  // > FixedRelations.relacionesFijas:22
+    if(Math.round(t*(1/dt))%3 == 0){  // > FixedRelations.relacionesFijas:23
+      SimData["t"].push(t)  // > FixedRelations.relacionesFijas:24
+      SimData["ch1"].push(outputs[channels["ch1"]["Signal"]]["value"])  // > FixedRelations.relacionesFijas:25
+      SimData["ch2"].push(outputs[channels["ch2"]["Signal"]]["value"])  // > FixedRelations.relacionesFijas:26
+     }  // > FixedRelations.relacionesFijas:27
+  });
+
+  _model.addToFixedRelations(function() { _isPaused = _model.isPaused(); _isPlaying = _model.isPlaying(); });
+
+  function _initializeSolvers() {
+    for (var i=0,n=_privateOdesList.length; i<n; i++) _privateOdesList[i].initializeSolver();
+  }
+
+  function _automaticResetSolvers() {
+    for (var i=0,n=_privateOdesList.length; i<n; i++) _privateOdesList[i].automaticResetSolver();
+  }
+
+  _model.resetSolvers = function() {
+    for (var i=0,n=_privateOdesList.length; i<n; i++) _privateOdesList[i].resetSolver();
+  };
+
+  _getODE = function (_odeName) {
+    if (_odeName=="Página Evolución") return _ODEi_evolution1;
+    return null;
+  }
+
+  function _getEventSolver(_odeName) {
+    var ode = _getODE(_odeName);
+    if (ode===null) return null;
+    return ode.getEventSolver();
+  }
+
+  function _setSolverClass(_odeName, _engine) {
+    var ode = _getODE(_odeName);
+    if (ode===null) return;
+    if (!_engine.setODE) {
+      var classname = _engine.toLowerCase();
+      if      (classname.indexOf("boga")>=0)   _engine = EJSS_ODE_SOLVERS.bogackiShampine23;
+      else if (classname.indexOf("cash")>=0)   _engine = EJSS_ODE_SOLVERS.cashKarp45;
+      else if (classname.indexOf("dopri5")>=0) _engine = EJSS_ODE_SOLVERS.dopri5;
+      else if (classname.indexOf("dopri8")>=0) _engine = EJSS_ODE_SOLVERS.dopri853;
+      else if (classname.indexOf("richa")>=0)  _engine = EJSS_ODE_SOLVERS.eulerRichardson;
+      else if (classname.indexOf("euler")>=0)  _engine = EJSS_ODE_SOLVERS.euler;
+      else if (classname.indexOf("fehlberg87")>=0) _engine = EJSS_ODE_SOLVERS.fehlberg87;
+      else if (classname.indexOf("fehlberg8")>=0)  _engine = EJSS_ODE_SOLVERS.fehlberg8;
+      else if (classname.indexOf("radau")>=0)   _engine = EJSS_ODE_SOLVERS.radau5;
+      else if (classname.indexOf("runge")>=0)  _engine = EJSS_ODE_SOLVERS.rungeKutta4;
+      else if (classname.indexOf("rk4")>=0)    _engine = EJSS_ODE_SOLVERS.rungeKutta4;
+      else if (classname.indexOf("verlet")>=0) _engine = EJSS_ODE_SOLVERS.velocityVerlet;
+    }
+    if (_engine) ode.setSolverClass(_engine);
+  }
+
+  function _ODE_evolution1() {
+    var __odeSelf = {};
+    var __eventSolver;
+    var __solverClass = EJSS_ODE_SOLVERS.rungeKutta4;
+    var __state=[];
+    var __ignoreErrors=false;
+    var __mustInitialize=true;
+    var __isEnabled=true;
+    var __mustUserReinitialize=false;
+    var __mustReinitialize=true;
+
+
+    __odeSelf._getOdeVars = function (){ return["y1","y2","dy2","i","d","t"]};
+
+    __odeSelf.setSolverClass = function(__aSolverClass) {
+      __solverClass = __aSolverClass;
+      __instantiateSolver();
+    };
+
+    function __instantiateSolver() {
+      __state=[];
+      __pushState();
+      __eventSolver = EJSS_ODE_SOLVERS.interpolatorEventSolver(__solverClass(),__odeSelf);
+      __mustInitialize = true;
+    }
+
+    __odeSelf.setEnabled = function(_enabled) { __isEnabled = _enabled; };
+
+    __odeSelf.getIndependentVariableValue = function() { return __eventSolver.getIndependentVariableValue(); };
+
+    __odeSelf.getInternalStepSize = function() { return __eventSolver.getInternalStepSize(); };
+
+    __odeSelf.isAccelerationIndependentOfVelocity = function() { return false; };
+
+    __odeSelf.initializeSolver = function() {
+      if (__arraysChanged()) { __instantiateSolver(); __odeSelf.initializeSolver(); return; }
+      __pushState();
+      __eventSolver.initialize(dt);
+      __eventSolver.setBestInterpolation(false);
+      __eventSolver.setMaximumInternalSteps(10000);
+      __eventSolver.removeAllEvents();
+      for(k in userEvents1){__eventSolver.addEvent(userEvents1[k]);}
+      __eventSolver.setEstimateFirstStep(false);
+      __eventSolver.setEnableExceptions(false);
+      __eventSolver.setTolerances(0.1,0.1);
+      __mustReinitialize = true;
+      __mustInitialize = false;
+    };
+
+    function __pushState() {
+      // Copy our variables to __state[] 
+        var __j=0;
+        var __n=0;
+        var __cIn=0;
+        if (__state[__cIn]!=y1) __mustReinitialize = true;
+        __state[__cIn++] = y1;
+        if (__state[__cIn]!=y2) __mustReinitialize = true;
+        __state[__cIn++] = y2;
+        if (__state[__cIn]!=dy2) __mustReinitialize = true;
+        __state[__cIn++] = dy2;
+        if (__state[__cIn]!=i) __mustReinitialize = true;
+        __state[__cIn++] = i;
+        if (__state[__cIn]!=d) __mustReinitialize = true;
+        __state[__cIn++] = d;
+        if (__state[__cIn]!=t) __mustReinitialize = true;
+        __state[__cIn++] = t;
+    }
+
+    function __arraysChanged () {
+      return false;
+    }
+
+    __odeSelf.getEventSolver = function() {
+      return __eventSolver;
+    };
+
+    __odeSelf.resetSolver = function() {
+      __mustUserReinitialize = true;
+    };
+
+    __odeSelf.automaticResetSolver = function() {
+      __mustReinitialize = true;
+    };
+
+    function __errorAction () {
+      if (__ignoreErrors) return;
+      console.log (__eventSolver.getErrorMessage());
+      _pause();
+      // Make sure the solver is reinitialized;
+      __mustReinitialize = true;
+    }
+
+    __odeSelf.step = function() { return __privateStep(false); };
+
+    __odeSelf.solverStep = function() { return __privateStep(true); };
+
+    function __privateStep(__takeMaximumStep) {
+      if (!__isEnabled) return 0;
+      if (dt===0) return 0;
+      if (__mustInitialize) __odeSelf.initializeSolver();
+      if (__arraysChanged()) { __instantiateSolver(); __odeSelf.initializeSolver(); }
+      __eventSolver.setStepSize(dt);
+      __eventSolver.setInternalStepSize(dt);
+      __eventSolver.setMaximumInternalSteps(10000);
+      __eventSolver.setTolerances(0.1,0.1);
+      __pushState();
+      if (__mustUserReinitialize) { 
+        __eventSolver.userReinitialize();
+        __mustUserReinitialize = false;
+        __mustReinitialize = false;
+        if (__eventSolver.getErrorCode()!=EJSS_ODE_SOLVERS.ERROR.NO_ERROR) __errorAction();
+      }
+      else if (__mustReinitialize) { 
+        __eventSolver.reinitialize();
+        __mustReinitialize = false;
+        if (__eventSolver.getErrorCode()!=EJSS_ODE_SOLVERS.ERROR.NO_ERROR) __errorAction();
+      }
+      var __stepTaken = __takeMaximumStep ? __eventSolver.maxStep() : __eventSolver.step();
+      // Extract our variables from __state
+        var __i=0;
+        var __cOut=0;
+        y1 = __state[__cOut++];
+        y2 = __state[__cOut++];
+        dy2 = __state[__cOut++];
+        i = __state[__cOut++];
+        d = __state[__cOut++];
+        t = __state[__cOut++];
+      // Check for error
+      if (__eventSolver.getErrorCode()!=EJSS_ODE_SOLVERS.ERROR.NO_ERROR) __errorAction();
+      return __stepTaken;
+    }
+
+    __odeSelf.getState = function() { return __state; };
+
+    __odeSelf.getRate = function(_aState,_aRate) {
+      // Extract our variables from _aState
+        var __i=0;
+        var __cOut=0;
+        var y1 = _aState[__cOut++];
+        var y2 = _aState[__cOut++];
+        var dy2 = _aState[__cOut++];
+        var i = _aState[__cOut++];
+        var d = _aState[__cOut++];
+        var t = _aState[__cOut++];
+      // Compute the rate
+        var __cRate=0;
+        _aRate[__cRate++] = (inputs['S1']['value']-y1)/tau; // Rate for ODE: Página Evolución:y1
+        _aRate[__cRate++] = dy2; // Rate for ODE: Página Evolución:y2
+        _aRate[__cRate++] = wn*wn*inputs['S2']['value'] - 2*chi*wn*dy2-wn*wn*y2; // Rate for ODE: Página Evolución:dy2
+        _aRate[__cRate++] = Kp*en_I*rPID/Ti; // Rate for ODE: Página Evolución:i
+        _aRate[__cRate++] = en_D*(rPID-d)/0.001; // Rate for ODE: Página Evolución:d
+        _aRate[__cRate++] = 1; // independent variable
+        return _aRate;
+    }; //end of getRate
+
+    __odeSelf._addEvent = function(userCondition,userAction,eventType,eventMethod,maxIter,eventTolerance,endAtEvent){
+    var User_Event = function (userCondition,userAction,eventType,eventMethod,maxIter,eventTolerance,endAtEvent) {
+      var _eventSelf = {};
+
+      _eventSelf.getTypeOfEvent = function() { return eventType; };
+
+      _eventSelf.getRootFindingMethod = function() { return eventMethod; };
+
+      _eventSelf.getMaxIterations = function() { return maxIter; };
+
+      _eventSelf.getTolerance = function() { return eventTolerance; };
+
+      _eventSelf.evaluate = function(_aState) { 
+      // Extract our variables from _aState
+        var __i=0;
+        var __cOut=0;
+        var y1 = _aState[__cOut++];
+        var y2 = _aState[__cOut++];
+        var dy2 = _aState[__cOut++];
+        var i = _aState[__cOut++];
+        var d = _aState[__cOut++];
+        var t = _aState[__cOut++];
+      return eval(userCondition);
+      };
+
+      _eventSelf.action = function() { 
+      // Extract our variables from __state
+        var __i=0;
+        var __cOut=0;
+        y1 = __state[__cOut++];
+        y2 = __state[__cOut++];
+        dy2 = __state[__cOut++];
+        i = __state[__cOut++];
+        d = __state[__cOut++];
+        t = __state[__cOut++];
+        var _returnValue = __userDefinedAction();
+      // Copy our variables to __state[] 
+        var __j=0;
+        var __n=0;
+        var __cIn=0;
+        __state[__cIn++] = y1;
+        __state[__cIn++] = y2;
+        __state[__cIn++] = dy2;
+        __state[__cIn++] = i;
+        __state[__cIn++] = d;
+        __state[__cIn++] = t;
+        return _returnValue;
+      };
+
+      function __userDefinedAction() {
+        if (undefined != functions) eval(functions.toString());
+        eval(userAction);
+        return endAtEvent;
+      }
+
+      return _eventSelf;
+    }; // End of event
+
+   userEvents1.push(User_Event(userCondition,userAction,eventType,eventMethod,maxIter,eventTolerance,endAtEvent));
+   }
+
+    __instantiateSolver();
+
+    return __odeSelf;
+  }
+
+  function _historic_y1(__time) {
+    var __index = 0;
+    return _ODEi_evolution1.getEventSolver().getStateHistory().interpolate(__time,__index);
+  }
+
+  function _historic_y2(__time) {
+    var __index = 0 + 1;
+    return _ODEi_evolution1.getEventSolver().getStateHistory().interpolate(__time,__index);
+  }
+
+  function _historic_dy2(__time) {
+    var __index = 0 + 1 + 1;
+    return _ODEi_evolution1.getEventSolver().getStateHistory().interpolate(__time,__index);
+  }
+
+  function _historic_i(__time) {
+    var __index = 0 + 1 + 1 + 1;
+    return _ODEi_evolution1.getEventSolver().getStateHistory().interpolate(__time,__index);
+  }
+
+  function _historic_d(__time) {
+    var __index = 0 + 1 + 1 + 1 + 1;
+    return _ODEi_evolution1.getEventSolver().getStateHistory().interpolate(__time,__index);
+  }
+
+    _model._fontResized = function(iBase,iSize,iDelta) {
+      _view._fontResized(iBase,iSize,iDelta);
+  }; // end of _fontResized
+
+  function _getViews() {
+    var _viewsInfo = [];
+    var _counter = 0;
+    _viewsInfo[_counter++] = { name : "dashboard", width : 800, height : 600 };
+    return _viewsInfo;
+  } // end of _getViews
+
+  function _selectView(_viewNumber) {
+    _view = null;
+    _view = new SimulModul_View(_topFrame,_viewNumber,_libraryPath,_codebasePath);
+    var _view_super_reset = _view._reset;
+    _view._reset = function() {
+      _view_super_reset();
+      switch(_viewNumber) {
+        case -10 : break; // make Lint happy
+        default :
+        case 0:
+          _view.E_2.linkProperty("LineColor",  function() { return inputs['S2']['color']; }, function(_v) { inputs['S2']['color'] = _v; } ); // dashboard linking property 'LineColor' for element 'E_2'
+          _view.E_2.linkProperty("X",  function() { return inputs['S2']['pos']['x']; } ); // dashboard linking property 'X' for element 'E_2'
+          _view.E_2.linkProperty("Y",  function() { return inputs['S2']['pos']['y']; } ); // dashboard linking property 'Y' for element 'E_2'
+          _view.E_PID_2.linkProperty("LineColor",  function() { return inputs['PID2']['color']; }, function(_v) { inputs['PID2']['color'] = _v; } ); // dashboard linking property 'LineColor' for element 'E_PID_2'
+          _view.E_PID_2.linkProperty("X",  function() { return inputs['PID2']['pos']['x']; } ); // dashboard linking property 'X' for element 'E_PID_2'
+          _view.E_PID_2.linkProperty("Y",  function() { return inputs['PID2']['pos']['y']; } ); // dashboard linking property 'Y' for element 'E_PID_2'
+          _view.E_PID_1.linkProperty("LineColor",  function() { return inputs['PID1']['color']; }, function(_v) { inputs['PID1']['color'] = _v; } ); // dashboard linking property 'LineColor' for element 'E_PID_1'
+          _view.E_PID_1.linkProperty("X",  function() { return inputs['PID1']['pos']['x']; } ); // dashboard linking property 'X' for element 'E_PID_1'
+          _view.E_PID_1.linkProperty("Y",  function() { return inputs['PID1']['pos']['y']; } ); // dashboard linking property 'Y' for element 'E_PID_1'
+          _view.E_1.linkProperty("X",  function() { return inputs['S1']['pos']['x']; } ); // dashboard linking property 'X' for element 'E_1'
+          _view.E_1.linkProperty("LineColor",  function() { return inputs['S1']['color']; }, function(_v) { inputs['S1']['color'] = _v; } ); // dashboard linking property 'LineColor' for element 'E_1'
+          _view.E_1.linkProperty("Y",  function() { return inputs['S1']['pos']['y']; } ); // dashboard linking property 'Y' for element 'E_1'
+          _view.Y2.setAction("OnRelease", conneDispatcher); // dashboard setting action 'OnRelease' for element 'Y2'
+          _view.Y2.linkProperty("X",  function() { return S_S2_x; }, function(_v) { S_S2_x = _v; } ); // dashboard linking property 'X' for element 'Y2'
+          _view.Y2.linkProperty("Y",  function() { return S_S2_y; }, function(_v) { S_S2_y = _v; } ); // dashboard linking property 'Y' for element 'Y2'
+          _view.U.setAction("OnRelease", conneDispatcher); // dashboard setting action 'OnRelease' for element 'U'
+          _view.U.linkProperty("X",  function() { return S_PID_x; }, function(_v) { S_PID_x = _v; } ); // dashboard linking property 'X' for element 'U'
+          _view.U.linkProperty("Y",  function() { return S_PID_y; }, function(_v) { S_PID_y = _v; } ); // dashboard linking property 'Y' for element 'U'
+          _view.R.setAction("OnRelease", conneDispatcher); // dashboard setting action 'OnRelease' for element 'R'
+          _view.R.linkProperty("X",  function() { return S_fuente_x; }, function(_v) { S_fuente_x = _v; } ); // dashboard linking property 'X' for element 'R'
+          _view.R.linkProperty("Y",  function() { return S_fuente_y; }, function(_v) { S_fuente_y = _v; } ); // dashboard linking property 'Y' for element 'R'
+          _view.Y1.setAction("OnRelease", conneDispatcher); // dashboard setting action 'OnRelease' for element 'Y1'
+          _view.Y1.linkProperty("X",  function() { return S_S1_x; }, function(_v) { S_S1_x = _v; } ); // dashboard linking property 'X' for element 'Y1'
+          _view.Y1.linkProperty("Y",  function() { return S_S1_y; }, function(_v) { S_S1_y = _v; } ); // dashboard linking property 'Y' for element 'Y1'
+          _view.MP.linkProperty("AngleForMinimum",  function() { return 215 * (Math.PI/180); } ); // dashboard linking property 'AngleForMinimum' for element 'MP'
+          _view.MP.setAction("OnChange", function(_data,_info) {
+  var tetha = Math.atan(-Math.log(MP)/Math.PI);
+  chi = Math.sin(tetha)
+  _view.MP.setBrand("Mp=" + MP.toFixed(2).toString());
+
+}); // dashboard setting action 'OnChange' for element 'MP'
+          _view.MP.linkProperty("AngleForMaximum",  function() { return -35 * (Math.PI/180); } ); // dashboard linking property 'AngleForMaximum' for element 'MP'
+          _view.MP.linkProperty("Value",  function() { return MP; }, function(_v) { MP = _v; } ); // dashboard linking property 'Value' for element 'MP'
+          _view.Wn.linkProperty("AngleForMinimum",  function() { return 215 * (Math.PI/180); } ); // dashboard linking property 'AngleForMinimum' for element 'Wn'
+          _view.Wn.setAction("OnChange", function(_data,_info) {
+  _view.Wn.setBrand("wn=" + wn.toFixed(2).toString());
+
+}); // dashboard setting action 'OnChange' for element 'Wn'
+          _view.Wn.linkProperty("AngleForMaximum",  function() { return -35 * (Math.PI/180); } ); // dashboard linking property 'AngleForMaximum' for element 'Wn'
+          _view.Wn.linkProperty("Value",  function() { return wn; }, function(_v) { wn = _v; } ); // dashboard linking property 'Value' for element 'Wn'
+          _view.Kp.linkProperty("AngleForMinimum",  function() { return 215 * (Math.PI/180); } ); // dashboard linking property 'AngleForMinimum' for element 'Kp'
+          _view.Kp.setAction("OnChange", function(_data,_info) {
+  _view.Kp.setRadius(0.5)
+  _view.Kp.setBrandFont("normal bold 15px")
+  _view.Kp.setBrand("Kp=" + Kp.toFixed(3).toString());
+
+}); // dashboard setting action 'OnChange' for element 'Kp'
+          _view.Kp.setAction("OnRelease", function(_data,_info) {
+  _view.Kp.setRadius(0.3)
+  _view.Kp.setBrandFont("normal bold 11px");
+
+}); // dashboard setting action 'OnRelease' for element 'Kp'
+          _view.Kp.linkProperty("AngleForMaximum",  function() { return -35 * (Math.PI/180); } ); // dashboard linking property 'AngleForMaximum' for element 'Kp'
+          _view.Kp.linkProperty("Value",  function() { return Kp; }, function(_v) { Kp = _v; } ); // dashboard linking property 'Value' for element 'Kp'
+          _view.Kp.setAction("OnPress", function(_data,_info) {
+  _view.Kp.setRadius(0.5)
+  _view.Kp.setBrandFont("normal bold 15px");
+
+}); // dashboard setting action 'OnPress' for element 'Kp'
+          _view.Td.linkProperty("AngleForMinimum",  function() { return 215 * (Math.PI/180); } ); // dashboard linking property 'AngleForMinimum' for element 'Td'
+          _view.Td.setAction("OnChange", function(_data,_info) {
+  _view.Td.setRadius(0.5)
+  _view.Td.setBrandFont("normal bold 15px")
+  _view.Td.setBrand("Td=" + Td.toFixed(3).toString());
+
+}); // dashboard setting action 'OnChange' for element 'Td'
+          _view.Td.setAction("OnRelease", function(_data,_info) {
+  _view.Td.setRadius(0.3)
+  _view.Td.setBrandFont("normal bold 11px");
+
+}); // dashboard setting action 'OnRelease' for element 'Td'
+          _view.Td.linkProperty("AngleForMaximum",  function() { return -35 * (Math.PI/180); } ); // dashboard linking property 'AngleForMaximum' for element 'Td'
+          _view.Td.linkProperty("Value",  function() { return Td; }, function(_v) { Td = _v; } ); // dashboard linking property 'Value' for element 'Td'
+          _view.Td.setAction("OnPress", function(_data,_info) {
+  _view.Td.setRadius(0.5)
+  _view.Td.setBrandFont("normal bold 15px");
+
+}); // dashboard setting action 'OnPress' for element 'Td'
+          _view.Ti.linkProperty("AngleForMinimum",  function() { return 215 * (Math.PI/180); } ); // dashboard linking property 'AngleForMinimum' for element 'Ti'
+          _view.Ti.setAction("OnChange", function(_data,_info) {
+  _view.Ti.setRadius(0.5)
+  _view.Ti.setBrandFont("normal bold 15px")
+  _view.Ti.setBrand("Ti=" + Ti.toFixed(3).toString());
+
+}); // dashboard setting action 'OnChange' for element 'Ti'
+          _view.Ti.setAction("OnRelease", function(_data,_info) {
+  _view.Ti.setRadius(0.3)
+  _view.Ti.setBrandFont("normal bold 11px");
+
+}); // dashboard setting action 'OnRelease' for element 'Ti'
+          _view.Ti.linkProperty("AngleForMaximum",  function() { return -35 * (Math.PI/180); } ); // dashboard linking property 'AngleForMaximum' for element 'Ti'
+          _view.Ti.linkProperty("Value",  function() { return Ti; }, function(_v) { Ti = _v; } ); // dashboard linking property 'Value' for element 'Ti'
+          _view.Ti.setAction("OnPress", function(_data,_info) {
+  _view.Ti.setRadius(0.5)
+  _view.Ti.setBrandFont("normal bold 15px");
+
+}); // dashboard setting action 'OnPress' for element 'Ti'
+          _view.Tau.linkProperty("AngleForMinimum",  function() { return 215 * (Math.PI/180); } ); // dashboard linking property 'AngleForMinimum' for element 'Tau'
+          _view.Tau.setAction("OnChange", function(_data,_info) {
+  _view.Tau.setBrand("T=" + tau.toFixed(2).toString());
+
+}); // dashboard setting action 'OnChange' for element 'Tau'
+          _view.Tau.linkProperty("AngleForMaximum",  function() { return -35 * (Math.PI/180); } ); // dashboard linking property 'AngleForMaximum' for element 'Tau'
+          _view.Tau.linkProperty("Value",  function() { return tau; }, function(_v) { tau = _v; } ); // dashboard linking property 'Value' for element 'Tau'
+          _view.Amp.linkProperty("AngleForMinimum",  function() { return 215 * (Math.PI/180); } ); // dashboard linking property 'AngleForMinimum' for element 'Amp'
+          _view.Amp.setAction("OnChange", function(_data,_info) {
+  _view.Amp.setRadius(0.5)
+  _view.Amp.setBrandFont("normal bold 15px")
+  _view.Amp.setBrand("A =" + A.toFixed(1).toString());
+
+}); // dashboard setting action 'OnChange' for element 'Amp'
+          _view.Amp.setAction("OnRelease", function(_data,_info) {
+  _view.Amp.setRadius(0.4)
+  _view.Amp.setBrandFont("normal bold 11px");
+
+}); // dashboard setting action 'OnRelease' for element 'Amp'
+          _view.Amp.linkProperty("AngleForMaximum",  function() { return -35 * (Math.PI/180); } ); // dashboard linking property 'AngleForMaximum' for element 'Amp'
+          _view.Amp.linkProperty("Value",  function() { return A; }, function(_v) { A = _v; } ); // dashboard linking property 'Value' for element 'Amp'
+          _view.Amp.setAction("OnPress", function(_data,_info) {
+  _view.Amp.setRadius(0.5)
+  _view.Amp.setBrandFont("normal bold 15px");
+
+}); // dashboard setting action 'OnPress' for element 'Amp'
+          _view.cable_PID.linkProperty("SizeX",  function() { return S_PID_x -outputs['U']['pos']['x']; } ); // dashboard linking property 'SizeX' for element 'cable_PID'
+          _view.cable_PID.linkProperty("X",  function() { return outputs['U']['pos']['x']; } ); // dashboard linking property 'X' for element 'cable_PID'
+          _view.cable_PID.linkProperty("Y",  function() { return S_PID_y; }, function(_v) { S_PID_y = _v; } ); // dashboard linking property 'Y' for element 'cable_PID'
+          _view.cable_Y1.linkProperty("SizeX",  function() { return S_S1_x -outputs['Y1']['pos']['x']; } ); // dashboard linking property 'SizeX' for element 'cable_Y1'
+          _view.cable_Y1.linkProperty("X",  function() { return outputs["Y1"]['pos']['x']; } ); // dashboard linking property 'X' for element 'cable_Y1'
+          _view.cable_Y1.linkProperty("Y",  function() { return outputs["Y1"]['pos']['y']; } ); // dashboard linking property 'Y' for element 'cable_Y1'
+          _view.cable_Y1.linkProperty("SizeY",  function() { return S_S1_y - outputs['Y1']['pos']['y']; } ); // dashboard linking property 'SizeY' for element 'cable_Y1'
+          _view.cable_Y2.linkProperty("SizeX",  function() { return S_S2_x-outputs['Y2']['pos']['x']; } ); // dashboard linking property 'SizeX' for element 'cable_Y2'
+          _view.cable_Y2.linkProperty("X",  function() { return outputs['Y2']['pos']['x']; } ); // dashboard linking property 'X' for element 'cable_Y2'
+          _view.cable_Y2.linkProperty("Y",  function() { return S_S2_y; }, function(_v) { S_S2_y = _v; } ); // dashboard linking property 'Y' for element 'cable_Y2'
+          _view.cable_R.linkProperty("SizeX",  function() { return S_fuente_x-outputs['R']['pos']['x']; } ); // dashboard linking property 'SizeX' for element 'cable_R'
+          _view.cable_R.linkProperty("X",  function() { return outputs['R']['pos']['x']; } ); // dashboard linking property 'X' for element 'cable_R'
+          _view.cable_R.linkProperty("Y",  function() { return S_fuente_y; }, function(_v) { S_fuente_y = _v; } ); // dashboard linking property 'Y' for element 'cable_R'
+          _view.enTd.setAction("OnPress", function(_data,_info) {
+  en_D = ! en_D
+  p = _view.enTd.getStyle()
+  if(en_D==1){
+    p.setFillColor("Yellow")
+  }
+  else{
+    p.setFillColor("LightGray")
+  }
+
+}); // dashboard setting action 'OnPress' for element 'enTd'
+          _view.enTi.setAction("OnPress", function(_data,_info) {
+  en_I = ! en_I
+  p = _view.enTi.getStyle()
+  if(en_I==1){
+    p.setFillColor("Yellow")
+  }
+  else{
+    p.setFillColor("LightGray")
+  }
+
+}); // dashboard setting action 'OnPress' for element 'enTi'
+          _view.plot1.linkProperty("MaximumX",  function() { return Duration + 0.2*Duration; } ); // dashboard linking property 'MaximumX' for element 'plot1'
+          _view.plot1.linkProperty("MinimumX",  function() { return -0.2*Duration; } ); // dashboard linking property 'MinimumX' for element 'plot1'
+          _view.plot1.linkProperty("XTickStep",  function() { return Duration/1000; } ); // dashboard linking property 'XTickStep' for element 'plot1'
+          _view.ch1.linkProperty("Maximum",  function() { return 2*Duration/dt; } ); // dashboard linking property 'Maximum' for element 'ch1'
+          _view.ch1.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // dashboard linking property 'InputX' for element 'ch1'
+          _view.ch1.linkProperty("InputY",  function() { return channels['ch1']['value']; } ); // dashboard linking property 'InputY' for element 'ch1'
+          _view.ch1.linkProperty("ClearAtInput",  function() { return resetPlots; }, function(_v) { resetPlots = _v; } ); // dashboard linking property 'ClearAtInput' for element 'ch1'
+          _view.ch2.linkProperty("Maximum",  function() { return 2*Duration/dt; } ); // dashboard linking property 'Maximum' for element 'ch2'
+          _view.ch2.linkProperty("InputX",  function() { return t; }, function(_v) { t = _v; } ); // dashboard linking property 'InputX' for element 'ch2'
+          _view.ch2.linkProperty("InputY",  function() { return channels['ch2']['value']; } ); // dashboard linking property 'InputY' for element 'ch2'
+          _view.ch2.linkProperty("ClearAtInput",  function() { return resetPlots; }, function(_v) { resetPlots = _v; } ); // dashboard linking property 'ClearAtInput' for element 'ch2'
+          _view.startStopSim.setAction("OffClick", _pause); // dashboard setting action 'OffClick' for element 'startStopSim'
+          _view.startStopSim.linkProperty("State",  function() { return _isPaused; } ); // dashboard linking property 'State' for element 'startStopSim'
+          _view.startStopSim.setAction("OnClick", function(_data,_info) {
+  t = 0
+  resetPlots = true;
+  _update()
+  resetPlots = false;
+  _play()
+  SimData ={"t": [],
+            "ch1":[],
+            "ch2":[]};
+
+}); // dashboard setting action 'OnClick' for element 'startStopSim'
+          _view.botonReset.setAction("OnClick", function(_data,_info) {
+  _reset();
+
+}); // dashboard setting action 'OnClick' for element 'botonReset'
+          _view.listaFcn.setAction("OnChange", function(_data,_info) {
+  opt =_view['listaFcn'].getSelectedOptions()[0]
+  channels['ch1']['Signal'] = opt;
+
+}); // dashboard setting action 'OnChange' for element 'listaFcn'
+          _view.listaFcn.linkProperty("Disabled",  function() { return _isPlaying; } ); // dashboard linking property 'Disabled' for element 'listaFcn'
+          _view.listaFcn2.setAction("OnChange", function(_data,_info) {
+  opt =_view['listaFcn2'].getSelectedOptions()[0]
+  channels['ch2']['Signal'] = opt;
+
+}); // dashboard setting action 'OnChange' for element 'listaFcn2'
+          _view.listaFcn2.linkProperty("Disabled",  function() { return _isPlaying; } ); // dashboard linking property 'Disabled' for element 'listaFcn2'
+          _view.Duration_v.linkProperty("Value",  function() { return Duration; }, function(_v) { Duration = _v; } ); // dashboard linking property 'Value' for element 'Duration_v'
+          _view.Duration_v.setAction("OnChange", _update); // dashboard setting action 'OnChange' for element 'Duration_v'
+          _view.resetPlots.setAction("OnRelease", function(_data,_info) {
+  resetPlots = false;
+
+}); // dashboard setting action 'OnRelease' for element 'resetPlots'
+          _view.resetPlots.setAction("OnPress", function(_data,_info) {
+  resetPlots = true;
+
+}); // dashboard setting action 'OnPress' for element 'resetPlots'
+          _view.botonSave.setAction("OnClick", guardarSim); // dashboard setting action 'OnClick' for element 'botonSave'
+          break;
+      } // end of switch
+    }; // end of new reset
+
+    _model.setView(_view);
+    _model.reset();
+    _view._enableEPub();
+  } // end of _selectView
+
+  _model.setAutoplay(false);
+  _model.setFPS(100);
+  _model.setStepsPerDisplay(200);
+  _selectView(_model._autoSelectView(_getViews())); // this includes _model.reset()
+  return _model;
+}
+
+function SimulModul_View (_topFrame,_viewNumber,_libraryPath,_codebasePath) {
+  var _view;
+  switch(_viewNumber) {
+    case -10 : break; // make Lint happy
+    default :
+    case 0: _view = SimulModul_View_0 (_topFrame); break;
+  } // end of switch
+
+  if (_codebasePath) _view._setResourcePath(_codebasePath);
+
+  if (_libraryPath) _view._setLibraryPath(_libraryPath);
+
+  _view._addDescriptionPage('Documentación','./SimulModul_Intro_1.html');
+
+  return _view;
+} // end of main function
+
+function SimulModul_View_0 (_topFrame) {
+  var _view = EJSS_CORE.createView(_topFrame);
+
+  _view._reset = function() {
+    _view._clearAll();
+    _view._addElement(EJSS_INTERFACE.panel,"panelCentral", _view._topFrame) // EJsS HtmlView.dashboard: declaration of element 'panelCentral'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"centralIzq", _view.panelCentral) // EJsS HtmlView.dashboard: declaration of element 'centralIzq'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.drawingPanel,"dashboardModulos", _view.centralIzq) // EJsS HtmlView.dashboard: declaration of element 'dashboardModulos'
+      .setProperty("Height",500) // EJsS HtmlView.dashboard: setting property 'Height' for element 'dashboardModulos'
+      .setProperty("Width",650) // EJsS HtmlView.dashboard: setting property 'Width' for element 'dashboardModulos'
+      .setProperty("CSS",{"float":"left"}) // EJsS HtmlView.dashboard: setting property 'CSS' for element 'dashboardModulos'
+      .setProperty("MinimumX",0) // EJsS HtmlView.dashboard: setting property 'MinimumX' for element 'dashboardModulos'
+      .setProperty("MinimumY",0) // EJsS HtmlView.dashboard: setting property 'MinimumY' for element 'dashboardModulos'
+      .setProperty("StopEventPropagation",true) // EJsS HtmlView.dashboard: setting property 'StopEventPropagation' for element 'dashboardModulos'
+      .setProperty("Enabled",true) // EJsS HtmlView.dashboard: setting property 'Enabled' for element 'dashboardModulos'
+      .setProperty("MaximumY",10) // EJsS HtmlView.dashboard: setting property 'MaximumY' for element 'dashboardModulos'
+      .setProperty("MaximumX",10) // EJsS HtmlView.dashboard: setting property 'MaximumX' for element 'dashboardModulos'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.image,"Sist1", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Sist1'
+      .setProperty("SizeX",2) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'Sist1'
+      .setProperty("X",8) // EJsS HtmlView.dashboard: setting property 'X' for element 'Sist1'
+      .setProperty("ImageUrl","./Mod1.png") // EJsS HtmlView.dashboard: setting property 'ImageUrl' for element 'Sist1'
+      .setProperty("Y",5) // EJsS HtmlView.dashboard: setting property 'Y' for element 'Sist1'
+      .setProperty("SizeY",6) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'Sist1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.image,"Sist_PID", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Sist_PID'
+      .setProperty("SizeX",2) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'Sist_PID'
+      .setProperty("X",3.5) // EJsS HtmlView.dashboard: setting property 'X' for element 'Sist_PID'
+      .setProperty("ImageUrl","./PID.png") // EJsS HtmlView.dashboard: setting property 'ImageUrl' for element 'Sist_PID'
+      .setProperty("Y",5) // EJsS HtmlView.dashboard: setting property 'Y' for element 'Sist_PID'
+      .setProperty("SizeY",6) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'Sist_PID'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.image,"Sist2", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Sist2'
+      .setProperty("SizeX",2) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'Sist2'
+      .setProperty("X",5.8) // EJsS HtmlView.dashboard: setting property 'X' for element 'Sist2'
+      .setProperty("ImageUrl","./Mod2.png") // EJsS HtmlView.dashboard: setting property 'ImageUrl' for element 'Sist2'
+      .setProperty("Y",5) // EJsS HtmlView.dashboard: setting property 'Y' for element 'Sist2'
+      .setProperty("SizeY",6) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'Sist2'
+      .setProperty("EnabledPosition","ENABLED_ANY") // EJsS HtmlView.dashboard: setting property 'EnabledPosition' for element 'Sist2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.image,"Gen", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Gen'
+      .setProperty("SizeX",2) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'Gen'
+      .setProperty("X",1.2) // EJsS HtmlView.dashboard: setting property 'X' for element 'Gen'
+      .setProperty("Y",5) // EJsS HtmlView.dashboard: setting property 'Y' for element 'Gen'
+      .setProperty("ImageUrl","./Mod0.png") // EJsS HtmlView.dashboard: setting property 'ImageUrl' for element 'Gen'
+      .setProperty("SizeY",6) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'Gen'
+      .setProperty("EnabledPosition","ENABLED_ANY") // EJsS HtmlView.dashboard: setting property 'EnabledPosition' for element 'Gen'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"E_2", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'E_2'
+      .setProperty("FillColor","#ECECEC") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'E_2'
+      .setProperty("SizeX",0.3) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'E_2'
+      .setProperty("ShapeType","RECTANGLE") // EJsS HtmlView.dashboard: setting property 'ShapeType' for element 'E_2'
+      .setProperty("SizeY",0.4) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'E_2'
+      .setProperty("LineWidth",4) // EJsS HtmlView.dashboard: setting property 'LineWidth' for element 'E_2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"E_PID_2", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'E_PID_2'
+      .setProperty("FillColor","#ECECEC") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'E_PID_2'
+      .setProperty("SizeX",0.3) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'E_PID_2'
+      .setProperty("ShapeType","RECTANGLE") // EJsS HtmlView.dashboard: setting property 'ShapeType' for element 'E_PID_2'
+      .setProperty("SizeY",0.4) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'E_PID_2'
+      .setProperty("LineWidth",4) // EJsS HtmlView.dashboard: setting property 'LineWidth' for element 'E_PID_2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"E_PID_1", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'E_PID_1'
+      .setProperty("FillColor","#ECECEC") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'E_PID_1'
+      .setProperty("SizeX",0.3) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'E_PID_1'
+      .setProperty("ShapeType","RECTANGLE") // EJsS HtmlView.dashboard: setting property 'ShapeType' for element 'E_PID_1'
+      .setProperty("SizeY",0.4) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'E_PID_1'
+      .setProperty("LineWidth",4) // EJsS HtmlView.dashboard: setting property 'LineWidth' for element 'E_PID_1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"E_1", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'E_1'
+      .setProperty("FillColor","#ECECEC") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'E_1'
+      .setProperty("SizeX",0.3) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'E_1'
+      .setProperty("ShapeType","RECTANGLE") // EJsS HtmlView.dashboard: setting property 'ShapeType' for element 'E_1'
+      .setProperty("SizeY",0.4) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'E_1'
+      .setProperty("LineWidth",4) // EJsS HtmlView.dashboard: setting property 'LineWidth' for element 'E_1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"Y2", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Y2'
+      .setProperty("FillColor","#F6311D") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'Y2'
+      .setProperty("SizeX",0.3) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'Y2'
+      .setProperty("SizeY",0.4) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'Y2'
+      .setProperty("EnabledPosition","ENABLED_X") // EJsS HtmlView.dashboard: setting property 'EnabledPosition' for element 'Y2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"U", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'U'
+      .setProperty("FillColor","#F6311D") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'U'
+      .setProperty("SizeX",0.3) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'U'
+      .setProperty("SizeY",0.4) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'U'
+      .setProperty("EnabledPosition","ENABLED_X") // EJsS HtmlView.dashboard: setting property 'EnabledPosition' for element 'U'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"R", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'R'
+      .setProperty("FillColor","#F6311D") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'R'
+      .setProperty("SizeX",0.3) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'R'
+      .setProperty("SizeY",0.4) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'R'
+      .setProperty("EnabledPosition","ENABLED_X") // EJsS HtmlView.dashboard: setting property 'EnabledPosition' for element 'R'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"Y1", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Y1'
+      .setProperty("FillColor","#F6311D") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'Y1'
+      .setProperty("SizeX",0.3) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'Y1'
+      .setProperty("SizeY",0.4) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'Y1'
+      .setProperty("EnabledPosition","ENABLED_ANY") // EJsS HtmlView.dashboard: setting property 'EnabledPosition' for element 'Y1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.knob,"MP", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'MP'
+      .setProperty("Radius",0.3) // EJsS HtmlView.dashboard: setting property 'Radius' for element 'MP'
+      .setProperty("Minimum",0) // EJsS HtmlView.dashboard: setting property 'Minimum' for element 'MP'
+      .setProperty("FillColor","Red") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'MP'
+      .setProperty("Digits",2) // EJsS HtmlView.dashboard: setting property 'Digits' for element 'MP'
+      .setProperty("BrandFont","normal bold 11px white") // EJsS HtmlView.dashboard: setting property 'BrandFont' for element 'MP'
+      .setProperty("Units","") // EJsS HtmlView.dashboard: setting property 'Units' for element 'MP'
+      .setProperty("MarksFont","normal bold 6px") // EJsS HtmlView.dashboard: setting property 'MarksFont' for element 'MP'
+      .setProperty("Brand","MP") // EJsS HtmlView.dashboard: setting property 'Brand' for element 'MP'
+      .setProperty("Maximum",1) // EJsS HtmlView.dashboard: setting property 'Maximum' for element 'MP'
+      .setProperty("X",8) // EJsS HtmlView.dashboard: setting property 'X' for element 'MP'
+      .setProperty("Y",6.0) // EJsS HtmlView.dashboard: setting property 'Y' for element 'MP'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.knob,"Wn", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Wn'
+      .setProperty("Radius",0.3) // EJsS HtmlView.dashboard: setting property 'Radius' for element 'Wn'
+      .setProperty("Minimum",5) // EJsS HtmlView.dashboard: setting property 'Minimum' for element 'Wn'
+      .setProperty("FillColor","Red") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'Wn'
+      .setProperty("Digits",2) // EJsS HtmlView.dashboard: setting property 'Digits' for element 'Wn'
+      .setProperty("BrandFont","normal bold 11px white") // EJsS HtmlView.dashboard: setting property 'BrandFont' for element 'Wn'
+      .setProperty("Units","") // EJsS HtmlView.dashboard: setting property 'Units' for element 'Wn'
+      .setProperty("MarksFont","normal bold 6px") // EJsS HtmlView.dashboard: setting property 'MarksFont' for element 'Wn'
+      .setProperty("Brand","wn") // EJsS HtmlView.dashboard: setting property 'Brand' for element 'Wn'
+      .setProperty("Maximum",30) // EJsS HtmlView.dashboard: setting property 'Maximum' for element 'Wn'
+      .setProperty("X",8) // EJsS HtmlView.dashboard: setting property 'X' for element 'Wn'
+      .setProperty("Y",4.0) // EJsS HtmlView.dashboard: setting property 'Y' for element 'Wn'
+      .setProperty("DrawLines",true) // EJsS HtmlView.dashboard: setting property 'DrawLines' for element 'Wn'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.knob,"Kp", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Kp'
+      .setProperty("Radius",0.3) // EJsS HtmlView.dashboard: setting property 'Radius' for element 'Kp'
+      .setProperty("Minimum",0.1) // EJsS HtmlView.dashboard: setting property 'Minimum' for element 'Kp'
+      .setProperty("FillColor","Red") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'Kp'
+      .setProperty("Digits",2) // EJsS HtmlView.dashboard: setting property 'Digits' for element 'Kp'
+      .setProperty("BrandFont","normal bold 11px white") // EJsS HtmlView.dashboard: setting property 'BrandFont' for element 'Kp'
+      .setProperty("Units","") // EJsS HtmlView.dashboard: setting property 'Units' for element 'Kp'
+      .setProperty("MarksFont","normal bold 6px") // EJsS HtmlView.dashboard: setting property 'MarksFont' for element 'Kp'
+      .setProperty("Brand","Kp") // EJsS HtmlView.dashboard: setting property 'Brand' for element 'Kp'
+      .setProperty("Maximum",6) // EJsS HtmlView.dashboard: setting property 'Maximum' for element 'Kp'
+      .setProperty("X",3.5) // EJsS HtmlView.dashboard: setting property 'X' for element 'Kp'
+      .setProperty("Y",6.1) // EJsS HtmlView.dashboard: setting property 'Y' for element 'Kp'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.knob,"Td", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Td'
+      .setProperty("Radius",0.3) // EJsS HtmlView.dashboard: setting property 'Radius' for element 'Td'
+      .setProperty("Minimum",0.01) // EJsS HtmlView.dashboard: setting property 'Minimum' for element 'Td'
+      .setProperty("FillColor","Red") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'Td'
+      .setProperty("Digits",2) // EJsS HtmlView.dashboard: setting property 'Digits' for element 'Td'
+      .setProperty("BrandFont","normal bold 11px white") // EJsS HtmlView.dashboard: setting property 'BrandFont' for element 'Td'
+      .setProperty("Units","") // EJsS HtmlView.dashboard: setting property 'Units' for element 'Td'
+      .setProperty("MarksFont","normal bold 6px") // EJsS HtmlView.dashboard: setting property 'MarksFont' for element 'Td'
+      .setProperty("Brand","Td") // EJsS HtmlView.dashboard: setting property 'Brand' for element 'Td'
+      .setProperty("Maximum",0.2) // EJsS HtmlView.dashboard: setting property 'Maximum' for element 'Td'
+      .setProperty("X",3.5) // EJsS HtmlView.dashboard: setting property 'X' for element 'Td'
+      .setProperty("Y",3.5) // EJsS HtmlView.dashboard: setting property 'Y' for element 'Td'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.knob,"Ti", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Ti'
+      .setProperty("Radius",0.3) // EJsS HtmlView.dashboard: setting property 'Radius' for element 'Ti'
+      .setProperty("Minimum",0.001) // EJsS HtmlView.dashboard: setting property 'Minimum' for element 'Ti'
+      .setProperty("FillColor","Red") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'Ti'
+      .setProperty("Digits",2) // EJsS HtmlView.dashboard: setting property 'Digits' for element 'Ti'
+      .setProperty("BrandFont","normal bold 11px white") // EJsS HtmlView.dashboard: setting property 'BrandFont' for element 'Ti'
+      .setProperty("Units","") // EJsS HtmlView.dashboard: setting property 'Units' for element 'Ti'
+      .setProperty("MarksFont","normal bold 6px") // EJsS HtmlView.dashboard: setting property 'MarksFont' for element 'Ti'
+      .setProperty("Brand","Ti") // EJsS HtmlView.dashboard: setting property 'Brand' for element 'Ti'
+      .setProperty("Maximum",8) // EJsS HtmlView.dashboard: setting property 'Maximum' for element 'Ti'
+      .setProperty("X",3.5) // EJsS HtmlView.dashboard: setting property 'X' for element 'Ti'
+      .setProperty("Y",4.8) // EJsS HtmlView.dashboard: setting property 'Y' for element 'Ti'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.knob,"Tau", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Tau'
+      .setProperty("Radius",0.3) // EJsS HtmlView.dashboard: setting property 'Radius' for element 'Tau'
+      .setProperty("Minimum",0.001) // EJsS HtmlView.dashboard: setting property 'Minimum' for element 'Tau'
+      .setProperty("FillColor","Red") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'Tau'
+      .setProperty("BrandFont","normal bold 11px white") // EJsS HtmlView.dashboard: setting property 'BrandFont' for element 'Tau'
+      .setProperty("Units","") // EJsS HtmlView.dashboard: setting property 'Units' for element 'Tau'
+      .setProperty("MarksFont","normal bold 6px") // EJsS HtmlView.dashboard: setting property 'MarksFont' for element 'Tau'
+      .setProperty("Brand","T") // EJsS HtmlView.dashboard: setting property 'Brand' for element 'Tau'
+      .setProperty("Maximum",0.5) // EJsS HtmlView.dashboard: setting property 'Maximum' for element 'Tau'
+      .setProperty("X",5.7) // EJsS HtmlView.dashboard: setting property 'X' for element 'Tau'
+      .setProperty("Y",6.0) // EJsS HtmlView.dashboard: setting property 'Y' for element 'Tau'
+      .setProperty("DrawLines",true) // EJsS HtmlView.dashboard: setting property 'DrawLines' for element 'Tau'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.knob,"Amp", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'Amp'
+      .setProperty("Radius",0.4) // EJsS HtmlView.dashboard: setting property 'Radius' for element 'Amp'
+      .setProperty("Minimum",1) // EJsS HtmlView.dashboard: setting property 'Minimum' for element 'Amp'
+      .setProperty("FillColor","Red") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'Amp'
+      .setProperty("Digits",2) // EJsS HtmlView.dashboard: setting property 'Digits' for element 'Amp'
+      .setProperty("BrandFont","normal bold 11px white") // EJsS HtmlView.dashboard: setting property 'BrandFont' for element 'Amp'
+      .setProperty("Units","V") // EJsS HtmlView.dashboard: setting property 'Units' for element 'Amp'
+      .setProperty("MarksFont","normal bold 6px") // EJsS HtmlView.dashboard: setting property 'MarksFont' for element 'Amp'
+      .setProperty("Brand","A") // EJsS HtmlView.dashboard: setting property 'Brand' for element 'Amp'
+      .setProperty("Maximum",5) // EJsS HtmlView.dashboard: setting property 'Maximum' for element 'Amp'
+      .setProperty("X",1.1) // EJsS HtmlView.dashboard: setting property 'X' for element 'Amp'
+      .setProperty("Y",5.3) // EJsS HtmlView.dashboard: setting property 'Y' for element 'Amp'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.spring,"cable_PID", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'cable_PID'
+      .setProperty("RelativePosition","WEST") // EJsS HtmlView.dashboard: setting property 'RelativePosition' for element 'cable_PID'
+      .setProperty("LineColor","#F6311D") // EJsS HtmlView.dashboard: setting property 'LineColor' for element 'cable_PID'
+      .setProperty("SizeY",0.1) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'cable_PID'
+      .setProperty("LineWidth",3) // EJsS HtmlView.dashboard: setting property 'LineWidth' for element 'cable_PID'
+      .setProperty("Loops",2) // EJsS HtmlView.dashboard: setting property 'Loops' for element 'cable_PID'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.spring,"cable_Y1", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'cable_Y1'
+      .setProperty("LineColor","#F6311D") // EJsS HtmlView.dashboard: setting property 'LineColor' for element 'cable_Y1'
+      .setProperty("LineWidth",3) // EJsS HtmlView.dashboard: setting property 'LineWidth' for element 'cable_Y1'
+      .setProperty("Loops",2) // EJsS HtmlView.dashboard: setting property 'Loops' for element 'cable_Y1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.spring,"cable_Y2", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'cable_Y2'
+      .setProperty("RelativePosition","WEST") // EJsS HtmlView.dashboard: setting property 'RelativePosition' for element 'cable_Y2'
+      .setProperty("LineColor","#F6311D") // EJsS HtmlView.dashboard: setting property 'LineColor' for element 'cable_Y2'
+      .setProperty("SizeY",0.1) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'cable_Y2'
+      .setProperty("LineWidth",3) // EJsS HtmlView.dashboard: setting property 'LineWidth' for element 'cable_Y2'
+      .setProperty("Loops",2) // EJsS HtmlView.dashboard: setting property 'Loops' for element 'cable_Y2'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.spring,"cable_R", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'cable_R'
+      .setProperty("RelativePosition","WEST") // EJsS HtmlView.dashboard: setting property 'RelativePosition' for element 'cable_R'
+      .setProperty("LineColor","#F6311D") // EJsS HtmlView.dashboard: setting property 'LineColor' for element 'cable_R'
+      .setProperty("SizeY",0.1) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'cable_R'
+      .setProperty("LineWidth",3) // EJsS HtmlView.dashboard: setting property 'LineWidth' for element 'cable_R'
+      .setProperty("Loops",2) // EJsS HtmlView.dashboard: setting property 'Loops' for element 'cable_R'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"enTd", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'enTd'
+      .setProperty("FillColor","LightGray") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'enTd'
+      .setProperty("SizeX",0.2) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'enTd'
+      .setProperty("X",2.8) // EJsS HtmlView.dashboard: setting property 'X' for element 'enTd'
+      .setProperty("Y",3.5) // EJsS HtmlView.dashboard: setting property 'Y' for element 'enTd'
+      .setProperty("SizeY",0.3) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'enTd'
+      .setProperty("EnabledPosition","ENABLED_NO_MOVE") // EJsS HtmlView.dashboard: setting property 'EnabledPosition' for element 'enTd'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.shape,"enTi", _view.dashboardModulos) // EJsS HtmlView.dashboard: declaration of element 'enTi'
+      .setProperty("FillColor","LightGray") // EJsS HtmlView.dashboard: setting property 'FillColor' for element 'enTi'
+      .setProperty("SizeX",0.2) // EJsS HtmlView.dashboard: setting property 'SizeX' for element 'enTi'
+      .setProperty("X",2.8) // EJsS HtmlView.dashboard: setting property 'X' for element 'enTi'
+      .setProperty("Y",4.8) // EJsS HtmlView.dashboard: setting property 'Y' for element 'enTi'
+      .setProperty("SizeY",0.3) // EJsS HtmlView.dashboard: setting property 'SizeY' for element 'enTi'
+      .setProperty("EnabledPosition","ENABLED_NO_MOVE") // EJsS HtmlView.dashboard: setting property 'EnabledPosition' for element 'enTi'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"centralDrch", _view.panelCentral) // EJsS HtmlView.dashboard: declaration of element 'centralDrch'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.plottingPanel,"plot1", _view.centralDrch) // EJsS HtmlView.dashboard: declaration of element 'plot1'
+      .setProperty("Height",470) // EJsS HtmlView.dashboard: setting property 'Height' for element 'plot1'
+      .setProperty("Width",600) // EJsS HtmlView.dashboard: setting property 'Width' for element 'plot1'
+      .setProperty("ShowAreaRectangle",true) // EJsS HtmlView.dashboard: setting property 'ShowAreaRectangle' for element 'plot1'
+      .setProperty("EnabledZooming",true) // EJsS HtmlView.dashboard: setting property 'EnabledZooming' for element 'plot1'
+      .setProperty("XFixedTick",500) // EJsS HtmlView.dashboard: setting property 'XFixedTick' for element 'plot1'
+      .setProperty("Title","Visor de ondas") // EJsS HtmlView.dashboard: setting property 'Title' for element 'plot1'
+      .setProperty("Enabled",true) // EJsS HtmlView.dashboard: setting property 'Enabled' for element 'plot1'
+      .setProperty("EnabledDragging","ENABLED_NONE") // EJsS HtmlView.dashboard: setting property 'EnabledDragging' for element 'plot1'
+      .setProperty("TitleY","V") // EJsS HtmlView.dashboard: setting property 'TitleY' for element 'plot1'
+      .setProperty("TitleX","Time (s)") // EJsS HtmlView.dashboard: setting property 'TitleX' for element 'plot1'
+      .setProperty("AutoScaleY",true) // EJsS HtmlView.dashboard: setting property 'AutoScaleY' for element 'plot1'
+      .setProperty("MarginY",20) // EJsS HtmlView.dashboard: setting property 'MarginY' for element 'plot1'
+      .setProperty("TitleFont","normal bold 18px ") // EJsS HtmlView.dashboard: setting property 'TitleFont' for element 'plot1'
+      .setProperty("TitleColor","#393245") // EJsS HtmlView.dashboard: setting property 'TitleColor' for element 'plot1'
+      .setProperty("GraphicsMode","SVG") // EJsS HtmlView.dashboard: setting property 'GraphicsMode' for element 'plot1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"ch1", _view.plot1) // EJsS HtmlView.dashboard: declaration of element 'ch1'
+      .setProperty("LineColor","#4BE732") // EJsS HtmlView.dashboard: setting property 'LineColor' for element 'ch1'
+      .setProperty("LineWidth",3) // EJsS HtmlView.dashboard: setting property 'LineWidth' for element 'ch1'
+      .setProperty("EnabledPosition","ENABLED_ANY") // EJsS HtmlView.dashboard: setting property 'EnabledPosition' for element 'ch1'
+      ;
+
+    _view._addElement(EJSS_DRAWING2D.trail,"ch2", _view.plot1) // EJsS HtmlView.dashboard: declaration of element 'ch2'
+      .setProperty("LineColor","#E73232") // EJsS HtmlView.dashboard: setting property 'LineColor' for element 'ch2'
+      .setProperty("LineWidth",3) // EJsS HtmlView.dashboard: setting property 'LineWidth' for element 'ch2'
+      .setProperty("EnabledPosition","ENABLED_ANY") // EJsS HtmlView.dashboard: setting property 'EnabledPosition' for element 'ch2'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"BotoneraPlot", _view.centralDrch) // EJsS HtmlView.dashboard: declaration of element 'BotoneraPlot'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.twoStateButton,"startStopSim", _view.BotoneraPlot) // EJsS HtmlView.dashboard: declaration of element 'startStopSim'
+      .setProperty("Background","#D2D2D2") // EJsS HtmlView.dashboard: setting property 'Background' for element 'startStopSim'
+      .setProperty("Tooltip","Inicio/Pausa de la simulación") // EJsS HtmlView.dashboard: setting property 'Tooltip' for element 'startStopSim'
+      .setProperty("ImageOnUrl","/org/opensourcephysics/resources/controls/images/play.gif") // EJsS HtmlView.dashboard: setting property 'ImageOnUrl' for element 'startStopSim'
+      .setProperty("ImageOffUrl","/org/opensourcephysics/resources/controls/images/pause.gif") // EJsS HtmlView.dashboard: setting property 'ImageOffUrl' for element 'startStopSim'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.button,"botonReset", _view.BotoneraPlot) // EJsS HtmlView.dashboard: declaration of element 'botonReset'
+      .setProperty("Tooltip","Reinicio de la simulación") // EJsS HtmlView.dashboard: setting property 'Tooltip' for element 'botonReset'
+      .setProperty("ImageUrl","/org/opensourcephysics/resources/controls/images/reset.gif") // EJsS HtmlView.dashboard: setting property 'ImageUrl' for element 'botonReset'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.imageAndTextButton,"Función", _view.BotoneraPlot) // EJsS HtmlView.dashboard: declaration of element 'Función'
+      .setProperty("Foreground","Green") // EJsS HtmlView.dashboard: setting property 'Foreground' for element 'Función'
+      .setProperty("Text","Canal 1") // EJsS HtmlView.dashboard: setting property 'Text' for element 'Función'
+      .setProperty("Font","Normal bold 12 px") // EJsS HtmlView.dashboard: setting property 'Font' for element 'Función'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.comboBox,"listaFcn", _view.BotoneraPlot) // EJsS HtmlView.dashboard: declaration of element 'listaFcn'
+      .setProperty("Options",['R','U','Y1','Y2']) // EJsS HtmlView.dashboard: setting property 'Options' for element 'listaFcn'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.imageAndTextButton,"Función2", _view.BotoneraPlot) // EJsS HtmlView.dashboard: declaration of element 'Función2'
+      .setProperty("Foreground","Red") // EJsS HtmlView.dashboard: setting property 'Foreground' for element 'Función2'
+      .setProperty("Text","Canal 2") // EJsS HtmlView.dashboard: setting property 'Text' for element 'Función2'
+      .setProperty("Font","Normal bold 12 px") // EJsS HtmlView.dashboard: setting property 'Font' for element 'Función2'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.comboBox,"listaFcn2", _view.BotoneraPlot) // EJsS HtmlView.dashboard: declaration of element 'listaFcn2'
+      .setProperty("Options",['R','U','Y1','Y2']) // EJsS HtmlView.dashboard: setting property 'Options' for element 'listaFcn2'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.imageAndTextButton,"Duration", _view.BotoneraPlot) // EJsS HtmlView.dashboard: declaration of element 'Duration'
+      .setProperty("Text","Duración (s)") // EJsS HtmlView.dashboard: setting property 'Text' for element 'Duration'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.numberField,"Duration_v", _view.BotoneraPlot) // EJsS HtmlView.dashboard: declaration of element 'Duration_v'
+      .setProperty("Width",60) // EJsS HtmlView.dashboard: setting property 'Width' for element 'Duration_v'
+      .setProperty("Format","0000") // EJsS HtmlView.dashboard: setting property 'Format' for element 'Duration_v'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.button,"resetPlots", _view.BotoneraPlot) // EJsS HtmlView.dashboard: declaration of element 'resetPlots'
+      .setProperty("Tooltip","Reset del visor de ondas") // EJsS HtmlView.dashboard: setting property 'Tooltip' for element 'resetPlots'
+      .setProperty("Text","Reset") // EJsS HtmlView.dashboard: setting property 'Text' for element 'resetPlots'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.button,"botonSave", _view.BotoneraPlot) // EJsS HtmlView.dashboard: declaration of element 'botonSave'
+      .setProperty("Tooltip","Guardar la simulación en Matlab") // EJsS HtmlView.dashboard: setting property 'Tooltip' for element 'botonSave'
+      .setProperty("ImageUrl","./save.png") // EJsS HtmlView.dashboard: setting property 'ImageUrl' for element 'botonSave'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"panelInferior", _view._topFrame) // EJsS HtmlView.dashboard: declaration of element 'panelInferior'
+      .setProperty("Width",1000) // EJsS HtmlView.dashboard: setting property 'Width' for element 'panelInferior'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"inferiorIzq", _view.panelInferior) // EJsS HtmlView.dashboard: declaration of element 'inferiorIzq'
+      .setProperty("CSS",{"float":"left"}) // EJsS HtmlView.dashboard: setting property 'CSS' for element 'inferiorIzq'
+      ;
+
+    _view._addElement(EJSS_INTERFACE.panel,"inferiorDrch", _view.panelInferior) // EJsS HtmlView.dashboard: declaration of element 'inferiorDrch'
+      ;
+
+  };
+
+  return _view;
+}
+
+
+//--><!]]></script>
+  </head>
+  <body>
+
+<table style="width:100%">
+  <tr>
+    <th> <img src="./isa.png" alt="isa logo" style="width:200px;"> </img></th>
+    <th><h1 style="color:#424949;text-align:center;" >Simulador práctica de laboratorio 3 </h1></th>
+    <th><img src="./uniovi.jpg" alt="uniovi logo" style="width:200px;"> </img></th>
+  </tr>
+</table>
+
+
+    <div style="height:80px"></div>
+    <div role="button" id="_topFrame" style="text-align:center"></div>
+  <p></p>
+  <p></p>
+  <h1 style="color:#424949;">Ayuda:</h1>
+<table style="border-spacing: 15px;">
+  
+  <tr><th><button xmlns="http://www.w3.org/1999/xhtml"  title="Inicio/Pausa de la simulación" style="vertical-align: middle; background-color: rgb(210, 210, 210);"><img style="vertical-align:inherit;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;" src="data:image/gif;base64,R0lGODlhEAAQAKL/AP///5mZzGZmmTMzZgAAAMDAwAAAAAAAACH5BAEAAAUALAAAAAAQABAAQAMsWLrcPkHIAYBTUIzbBrXcMghhF01l9pUFyBbbiwUxm2n2iXL3ytMVW1BWSgAAIf5PQ29weXJpZ2h0IDIwMDAgYnkgU3VuIE1pY3Jvc3lzdGVtcywgSW5jLiBBbGwgUmlnaHRzIFJlc2VydmVkLg0KSkxGIEdSIFZlciAxLjANCgA7" /></button></th> <th>Botón de inicio y pausa de la simulación. <p></p></th></tr>
+  
+  <tr><th><button xmlns="http://www.w3.org/1999/xhtml" title="Reinicio de la simulación" style="vertical-align: middle;"><img style="vertical-align:inherit;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;" src="data:image/gif;base64,R0lGODlhEAAQAIcAAAAAAAAAMwAAZgAAmQAAzAAA/wAzAAAzMwAzZgAzmQAzzAAz/wBmAABmMwBmZgBmmQBmzABm/wCZAACZMwCZZgCZmQCZzACZ/wDMAADMMwDMZgDMmQDMzADM/wD/AAD/MwD/ZgD/mQD/zAD//zMAADMAMzMAZjMAmTMAzDMA/zMzADMzMzMzZjMzmTMzzDMz/zNmADNmMzNmZjNmmTNmzDNm/zOZADOZMzOZZjOZmTOZzDOZ/zPMADPMMzPMZjPMmTPMzDPM/zP/ADP/MzP/ZjP/mTP/zDP//2YAAGYAM2YAZmYAmWYAzGYA/2YzAGYzM2YzZmYzmWYzzGYz/2ZmAGZmM2ZmZmZmmWZmzGZm/2aZAGaZM2aZZmaZmWaZzGaZ/2bMAGbMM2bMZmbMmWbMzGbM/2b/AGb/M2b/Zmb/mWb/zGb//5kAAJkAM5kAZpkAmZkAzJkA/5kzAJkzM5kzZpkzmZkzzJkz/5lmAJlmM5lmZplmmZlmzJlm/5mZAJmZM5mZZpmZmZmZzJmZ/5nMAJnMM5nMZpnMmZnMzJnM/5n/AJn/M5n/Zpn/mZn/zJn//8wAAMwAM8wAZswAmcwAzMwA/8wzAMwzM8wzZswzmcwzzMwz/8xmAMxmM8xmZsxmmcxmzMxm/8yZAMyZM8yZZsyZmcyZzMyZ/8zMAMzMM8zMZszMmczMzMzM/8z/AMz/M8z/Zsz/mcz/zMz///8AAP8AM/8AZv8Amf8AzP8A//8zAP8zM/8zZv8zmf8zzP8z//9mAP9mM/9mZv9mmf9mzP9m//+ZAP+ZM/+ZZv+Zmf+ZzP+Z///MAP/MM//MZv/Mmf/MzP/M////AP//M///Zv//mf//zP///87OzgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAMAANgALAAAAAAQABAAAAheALEJHMhioMGDAq8URIiQhaCFDAleeRhR4kQWGDMeZHGl48OOICEK5HgxI0aFGy9eW7nSoUhsLq8ZjLmRhUyCD2/O1AkzJ0OeNE0KPWlzJMijIXUOFcoTG8unLA0GBAA7" /></button> </th> <th> Botón de reinicio de la simulación. Restaura todos los parámetros y conexiones a su valores por defecto.</th></tr>
+  
+
+  <tr><th><button xmlns="http://www.w3.org/1999/xhtml" id="Función" style="border-style: none; background: inherit; cursor: inherit; box-shadow: rgba(255, 255, 255, 0) 0px 0px 0px inset, rgba(0, 0, 0, 0) 0px 0px 0px; color: green; font-style: normal; font-weight: bold; font-family: px;">Canal 1</button> <select xmlns="http://www.w3.org/1999/xhtml" ><option value="R">R</option><option value="U">U</option><option value="Y1">Y1</option><option value="Y2">Y2</option></select> </th> <th> Desplegables de los canales del visor. Permiten selecionar la señal de salida a medir.  </th></tr>
+
+<tr><th><button xmlns="http://www.w3.org/1999/xhtml" id="Duration" style="border-style: none; background: inherit; cursor: inherit; box-shadow: rgba(255, 255, 255, 0) 0px 0px 0px inset, rgba(0, 0, 0, 0) 0px 0px 0px;">Duración (s)</button> <input xmlns="http://www.w3.org/1999/xhtml" type="number"  style="width: 60px;" /> </th><th> Selección de la duración de la simulación. </th></tr>
+
+<tr><th><button xmlns="http://www.w3.org/1999/xhtml" title="Reset del visor de ondas" style="vertical-align: middle;"><span style="white-space:pre;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;vertical-align:inherit;">Reset</span></button> </th><th> Borrado de las medidas del visor. </th></tr> 
+
+<tr><th><button xmlns="http://www.w3.org/1999/xhtml" title="Guardar la simulación en Matlab" style="vertical-align: middle;"><img style="vertical-align:inherit;-webkit-touch-callout:none;user-select:none;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACUAAAAWCAYAAABHcFUAAAABQWlDQ1BJQ0MgUHJvZmlsZQAAKJFjYGASSCwoyGFhYGDIzSspCnJ3UoiIjFJgf8rAxMDKwM6gyGCcmFxc4BgQ4ANUwgCjUcG3awyMIPqyLsgsm//VDeuL/jDbtsT2f/q0UhZTPQrgSkktTgbSf4A4KbmgqISBgTEByFYuLykAsVuAbJEioKOA7BkgdjqEvQbEToKwD4DVhAQ5A9lXgGyB5IzEFCD7CZCtk4Qkno7EhtoLAhweAQpG5mnlBJxKOihJrSgB0c75BZVFmekZJQqOwBBKVfDMS9bTUTAyMDJkYACFN0T15/PgcGSUSEKIZfxmYDBdDBQURoilvWJg2J7IwCCYghBT+8jAIAQMwwNbCxKLEuEOYPzGUpxmbARh80gxMLAe+P//038GBnZgGP899///7xn///+dxsDA/IWBYb8fAGZBYSBIILxqAAAAimVYSWZNTQAqAAAACAAEARIAAwAAAAEAAQAAARoABQAAAAEAAAA+ARsABQAAAAEAAABGh2kABAAAAAEAAABOAAAAAAAAAEgAAAABAAAASAAAAAEAA5KGAAcAAAASAAAAeKACAAQAAAABAAAAJaADAAQAAAABAAAAFgAAAABBU0NJSQAAAFNjcmVlbnNob3SG2nchAAAACXBIWXMAAAsTAAALEwEAmpwYAAACO2lUWHRYTUw6Y29tLmFkb2JlLnhtcAAAAAAAPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyIgeDp4bXB0az0iWE1QIENvcmUgNS40LjAiPgogICA8cmRmOlJERiB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPgogICAgICA8cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0iIgogICAgICAgICAgICB4bWxuczpleGlmPSJodHRwOi8vbnMuYWRvYmUuY29tL2V4aWYvMS4wLyIKICAgICAgICAgICAgeG1sbnM6dGlmZj0iaHR0cDovL25zLmFkb2JlLmNvbS90aWZmLzEuMC8iPgogICAgICAgICA8ZXhpZjpVc2VyQ29tbWVudD5TY3JlZW5zaG90PC9leGlmOlVzZXJDb21tZW50PgogICAgICAgICA8ZXhpZjpQaXhlbFhEaW1lbnNpb24+ODI8L2V4aWY6UGl4ZWxYRGltZW5zaW9uPgogICAgICAgICA8ZXhpZjpQaXhlbFlEaW1lbnNpb24+NjA8L2V4aWY6UGl4ZWxZRGltZW5zaW9uPgogICAgICAgICA8dGlmZjpPcmllbnRhdGlvbj4xPC90aWZmOk9yaWVudGF0aW9uPgogICAgICA8L3JkZjpEZXNjcmlwdGlvbj4KICAgPC9yZGY6UkRGPgo8L3g6eG1wbWV0YT4K6tpbxAAABMJJREFUSA29ls9vVFUUxz/zs9MZ2pnpD2hpoQpqiBVLI9IEVmwwaheEFBcuiF0YF640RqL+A12IbkxAhYCJJISAgRAQE7S01IilFktbQKu0Q1unTH/P75nOvPGeN/PqQIaqgfYkN/Peu/ed87nnfO+ZZ8ooY4UsnU5jMpkwm81LRjStBJSxbwESy2gapiXAlkZecj//bVKABEbG7NwckVhMBzJAC3lZESgJfMvv59B779D/+WekkgkdUjJWyJYVSlNZEv2EE3G+On+JqugxKv54n9GeHp1FL2cBSS8blA6U01DXrZscO3iKzduep3wz3PvuApFwBJUuCpVxWaAkkDkHNOjzcbD9Mk29NyhOpHA5NxLvOMHM8HC2crl1+WX8V6hCO8l3kH9t9BYpSyIe52p/PwcuXmS89zobGMESWsCurcZ25w6TN/rQyB6CB2NYxWn+Q3GoKQHKsFqtuiDzAxe6XoTJTfrUKfuyq4sfrlzBPjVF7eAAbjVniaYgkWHVOlXCrk5iza/icnsEQC+l4VvPlIAYQyZEnEePHuXs2bP3AefDyzqBkSHdJ9uBwO+f4NPDhzlx8iRlfX04frtNyZiP0vVuTIk0RCOUPllD9JsvmB31qTeFx3hbv8WaSqUYGhrSMyNBbTYbCwsLdHR0cPz4cVpbW2lpaWHHjh243W4d0nBiuNJUpw5Ewvw+PUnnQB8DF86xqb2T+JYtOFNJykKzrFpTSUYlingMp6caU2CcqYF+1j7XoOtPYht+rQJw6vRpXQMWi0WfkNKNjY3p2JKxkZER6urqdCh5aDiYj0UZVzC3I0F+mZ1idGYalyXDs6/vZbymhtivA3hnArjL3TiLlfglrck0dnsGl7oMdLQTe7k5W0JxnLOH/s3s37+f7u5u2traaGxsVI7sizDS8qTu13zDHJmZIKCi1aY1itUxz4RCJBXoxPUBYm0H2FBbRrXDzNPVZho22amrKSEeKeb2YJq7qrxbz/eyrqHR4NF/dU3JzmVIhsQke/v27ePMmTM0NTXdByTzRtka1tbyVtV6tqmyxIJB5pVegskkM/5JgucuUqW8lxbZ1UjjKk5jtqn8pFNYw70UhfvIjCvB93STzsVVEOIePVMC9KAZ9RXNybWUNt/UNhRcFm9ibpZvh24xODNJ3B/g5qHDPPVzN5Ubqyi3JKgp01i3fg1PlIfwlPpJ1X/EfMkz/HniJHP9XezsGMJdUbl4CvWWYADkB5XPDDFpC4VMgKRrK2KqPF5eq29kKh4lFQxx7sefGFVQFd4SVlsmqajagNcRx2z1E9v1Nc7tu6l1uPBs38XVD9/lbudlNu/Zq/uSbD1UU4VACj2THEumjQ4ua3zqBF5pbaLG68ZTXUmpI0ORdhPrniN4X3qDIvlsyW0oGLjH0OXvqW/ejcPp1J8/MpQBqmdNdqkCiiYnLxzAO/wBDttOYn+1E976MaWvvE1xkYOM0pVamAVQsoirzxmpiFW1I7HHBpWFy2pT00yEp3uwBV/ENg/z4U9wvfAmDtcq0JQszP/oM5NRH3wCmGePGUo8C5iJ5EKU0PwldemhxL0du2hTAegZygPQ35AM53X1ZYB6IKJxm9OQcbvU7/15W2rlo8z9DyAJ8zeFJDVCbCFQUwAAAABJRU5ErkJggg==" /></button></th> <th> Exportar los datos de la simulación al portapapeles. Pueden ser pegados directamente en la terminal de Matlab. </th></tr>
+
+<tr><th><svg xmlns="http://www.w3.org/2000/svg" id="dashboardModulos" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" style="overflow: hidden; float: left;"><defs/><path id=".myPanel" d="M 0.5 0.5 L 0.5 499.5 L 649.5 499.5 L 649.5 0.5 z" fill="rgb(255,255,255)" stroke="black" stroke-width="0.0" shapeRendering="auto"/><ellipse xmlns="http://www.w3.org/2000/svg" cx="25" cy="25" rx="9.735000000000001" ry="9.98" fill="#F6311D" stroke="Black" stroke-width="0.5" shapeRendering="auto" visibility="visible" transform=""/></svg> </th><th>Señal de salida. Puede ser arrastrado con el raton a una entrada</th></tr>
+
+<tr><th><svg xmlns="http://www.w3.org/2000/svg" id="dashboardModulos" xmlns:xlink="http://www.w3.org/1999/xlink" width="50" height="50" style="overflow: hidden; float: left;"><defs/><path xmlns="http://www.w3.org/2000/svg" id="E_PID_2" d="m 15 25 l 20 0 l 0 20 l -20 0 l 0 -20 z" fill="#ECECEC" stroke="#1D62F6" stroke-width="4" shapeRendering="auto" visibility="visible" transform=""/></svg> </th><th>Señal de entrada. Pueden ser arrastradas hasta ella una salida de un módulo.</th></tr>
+
+
+</table>
+
+
+
+  <div id="metadata" class="metadata">
+    <br />
+    <div id="title_author">
+      <hr />
+      <b>Title and author:</b>
+      <p>
+      Simulador práctica de laboratorio 1<br />
+      </p>
+      <p>
+ Sistemas de Control ISA
+      </p>
+    </div>
+    <hr />
+    <p></p>
+    <div id="copyright_message">
+      <div class="cc_left"  style="float:left">&#169; 2021, Sistemas de Control ISA.</div>
+      <div class="cc_right" style="float:right">    Released under a <a rel="license" target="_blank" href="http://creativecommons.org/licenses/by-nc-sa/4.0/deed.en_US"> <img alt="Creative Commons Attribution-NonCommercial-ShareAlike" src="_ejs_library/images/cc_icon.png" /> </a> license.</div>
+    </div>
+  </div>
+    <script type="text/javascript"><!--//--><![CDATA[//><!--
+      var _model;
+      var _scorm;
+      window.addEventListener('load',
+        function () { 
+          _model =  new SimulModul("_topFrame","_ejs_library/",null);
+          if (typeof _isApp !== "undefined" && _isApp) _model.setRunAlways(true);
+          TextResizeDetector.TARGET_ELEMENT_ID = '_topFrame';
+          TextResizeDetector.USER_INIT_FUNC = function () {
+            var iBase = TextResizeDetector.addEventListener(function(e,args) {
+              _model._fontResized(args[0].iBase,args[0].iSize,args[0].iDelta);
+              },null);
+            _model._fontResized(iBase);
+          };
+          _model.onload();
+        }, false);
+    //--><!]]></script>
+  </body>
+</html>

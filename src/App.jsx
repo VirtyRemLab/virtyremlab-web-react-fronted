@@ -13,6 +13,7 @@ import PendulumSimulator from "./pages/PendulumSimulator"
 import Aeropendulo from "./pages/Aeropendulo"
 import Modulitos from "./pages/Modulitos"
 import Pendulo from "./pages/Pendulo"
+import Sim_modulitos from "./pages/Sim_modulitos"
 
 
 export default function App() {
@@ -31,7 +32,11 @@ export default function App() {
             <Route path="sim_aeropendulo" element={<Sim_aeropendulo />} />
             <Route path="rem_aeropendulo" element={<RemotoAeropendulo />} />
           </Route>
-          <Route path="modulitos" element={<Modulitos />} />
+          {/* <Route path="modulitos" element={<Modulitos />} /> */}
+          <Route path="modulitos/"  >
+            <Route index element={<Modulitos />} />
+            <Route path="sim_modulitos" element={<Sim_modulitos />} />
+          </Route>
           <Route path="pendulo/"  >
             <Route index element={<Pendulo />} />
             <Route path="sim_pendulo" element={<PendulumSimulator />} />

@@ -12,8 +12,10 @@ export default function CameraMiniViewIframe({ WHEP_ADDR, descripcion }) {
                 borderRadius: 2,
                 overflow: "hidden",
                 bgcolor: "black",
+                width: "100%",
+                height: "100%",
                 display: "flex",
-                flexDirection: "column",
+                flexDirection: "row",
             }}
         >
             {descripcion && (
@@ -30,10 +32,12 @@ export default function CameraMiniViewIframe({ WHEP_ADDR, descripcion }) {
                 />
             )}
 
-            <CardContent sx={{ p: 0 }}>
+            <CardContent sx={{ p: 0, flex: 1 }}>
                 {/* Contenedor con relación de aspecto 16:9 */}
                 <Box
                     sx={{
+                        width: "100%",
+                        height: "100%",
                         display: "flex"
                     }}
                 >
@@ -42,7 +46,10 @@ export default function CameraMiniViewIframe({ WHEP_ADDR, descripcion }) {
                         src={WHEP_ADDR}
                         title={descripcion || "Cam Tapo"}
                         sx={{
-                            display: "flex",
+                            aspectRatio: "16/9",
+                            width: "100%",
+                            height: "100%",
+                            flex: 1,
                             border: "none",
                         }}
                         allow="camera; microphone; fullscreen; autoplay"
