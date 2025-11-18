@@ -17,8 +17,9 @@ export default function Home() {
   // TODO: esto lo deberíamos sacar de una BBDD
   var labs = [
     { "Name": "Aeropéndulo", "Description": "Sistema de control tipo balancín donde el ángulo de giro se controla con dos motores de drone", "Tags": [["#Remoto", "#Simulación"]], "path": "aeropendulo" },
-    { "Name": "Módulos de primer y segundo orden", "Description": "Simulación de sistemas de primer y segundo orden analógicos con realimentación", "Tags": [["#Simulación"]], "path": "modulitos" },
-    { "Name": "Péndulo", "Description": "Simulación de un péndulo como un sistema no lineal donde experimentar con la linealización de sistemas dinámicos", "Tags": [["#Simulación"]], "path": "pendulo" }
+
+    { "Name": "Péndulo", "Description": "Simulación de un péndulo como un sistema no lineal donde experimentar con la linealización de sistemas dinámicos", "Tags": [["#Simulación"]], "path": "pendulo" },
+    { "Name": "Módulos de primer y segundo orden", "Description": "Simulación de sistemas de primer y segundo orden analógicos con realimentación", "Tags": [["#Simulación"]], "path": "modulitos" }
   ];
 
   return (

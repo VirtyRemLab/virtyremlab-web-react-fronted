@@ -32,11 +32,15 @@ export default function App() {
             <Route path="rem_aeropendulo" element={<RemotoAeropendulo />} />
           </Route>
           <Route path="modulitos" element={<Modulitos />} />
-          <Route path="pendulo" element={<Pendulo />} />
+          <Route path="pendulo/"  >
+            <Route index element={<Pendulo />} />
+            <Route path="sim_pendulo" element={<PendulumSimulator />} />
+          </Route>
+
         </Route>
         <Route path="camaras" element={<Camaras />} />
         <Route path="docs" element={<Docs />} />
-        <Route path="sim_pendulo" element={<PendulumSimulator />} />
+        {/* <Route path="sim_pendulo" element={<PendulumSimulator />} /> */}
       </Route>
     </Routes>
 
