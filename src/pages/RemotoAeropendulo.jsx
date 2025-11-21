@@ -25,7 +25,7 @@ import Tooltip from "@mui/material/Tooltip";
 import CircleIcon from "@mui/icons-material/Circle";
 import CameraMiniViewIframe from "../media/CameraMiniViewIframe";
 import RestartButton from "../inputs/RestartButton"
-
+import InputSlider from "../inputs/slider"
 
 
 const getSocketUrl = () => {
@@ -39,11 +39,17 @@ export default function RemotoAeropendulo() {
   const WHEP_ADDR = "http://156.35.152.161:8889/tapo"
   const socketRef = useRef();
 
-  const [y, sety] = useState(Array(100).fill(0));
-  const [r, setr] = useState(Array(100).fill(0));
-  const [e, sete] = useState(Array(100).fill(0));
-  const [u, setu] = useState(Array(100).fill(0));
-  const [x, setx] = useState(Array(100).fill(0));
+  // Parámetros del control
+  const Kp = useRef(4); // Kp como referencia para que persista entre renderizados (valor global)
+  const Ki = useRef(0); // Ganancia integral Ki 
+  const Kd = useRef(0); // Ganancia diferencial Kd 
+
+
+  const [y, sety] = useState(Array(300).fill(0));
+  const [r, setr] = useState(Array(300).fill(0));
+  const [e, sete] = useState(Array(300).fill(0));
+  const [u, setu] = useState(Array(300).fill(0));
+  const [x, setx] = useState(Array(300).fill(0));
   const [angle, setangle] = useState(0);
 
   // Estados UI
@@ -98,6 +104,19 @@ export default function RemotoAeropendulo() {
       // Datos del error
       if (typeof data["ek"] !== "undefined") {
         sete((prev) => [...prev.slice(1), data["ek"]]);
+      }
+
+      if (typeof data["Kp"] !== "undefined") {
+        Kp.current = data["Kp"]
+      }
+
+
+      if (typeof data["Ki"] !== "undefined") {
+        Ki.current = data["Ki"]
+      }
+
+      if (typeof data["Kd"] !== "undefined") {
+        Kd.current = data["Kd"]
       }
 
       if (typeof data["mode"] !== "undefined") {
@@ -160,6 +179,26 @@ export default function RemotoAeropendulo() {
       socketRef.current.emit("event", 4);
       setPlay(false)
     }
+  }
+
+
+  const cllback_kp = (event, newValue) => {
+    socketRef.current.emit("Kp", newValue);
+
+
+  }
+
+  const cllback_ki = (event, newValue) => {
+    socketRef.current.emit("Ki", newValue);
+    Ki.current = newValue;
+
+
+  }
+
+  const cllback_kd = (event, newValue) => {
+    socketRef.current.emit("Kd", newValue);
+    Kd.current = newValue;
+
   }
 
 
@@ -312,7 +351,11 @@ export default function RemotoAeropendulo() {
                       </Typography>
                       <PlayPauseButton cllback={callback_play} />
 
-
+                      {/* Configuración de la regulador */}
+                      <Typography variant="h5" gutterBottom> Regulador PID </Typography>
+                      <InputSlider title={"Kp"} min={0} max={10} initVal={Kp.current} step={0.3} units={""} cllback={cllback_kp} />
+                      <InputSlider title={"Ki"} min={0} max={1} initVal={Ki.current} step={0.05} units={""} cllback={cllback_ki} />
+                      <InputSlider title={"Kd"} min={0} max={0.1} initVal={Kd.current} step={0.0005} units={""} cllback={cllback_kd} />
 
 
 
@@ -363,7 +406,7 @@ Kd      : ${pretty(aeroState?.Kd)}
                   labels={["Consigna r(t)", "Salida y(t)"]}
                   height={300}
                   width="100%"
-                  range={[-180, 180]}
+                  range={[-60, 60]}
                 />
 
                 <LineChart

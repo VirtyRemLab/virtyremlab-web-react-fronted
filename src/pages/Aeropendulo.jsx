@@ -166,7 +166,7 @@ export default function Aeropendulo() {
                                         <Box display="flex" alignItems="center" gap={1}>
 
                                             <a
-                                                href="/pdf/DescripciónAeropendulo.pdf"
+                                                href="/pdf/DescripcionAeropendulo.pdf"
                                                 download
                                                 style={{ color: "#2F85EE", textDecoration: "none", fontWeight: 500 }}
                                             >
